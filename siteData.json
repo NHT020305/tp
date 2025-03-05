@@ -7,6 +7,8 @@
       "headings": {
         "about-us": "About Us",
         "project-team": "Project team",
+        "dang-quang-thang": "Dang Quang Thang",
+        "nguyen-huy-tung": "Nguyen Huy Tung",
         "ku-brian": "Ku Brian",
         "ernest-ng-zi-xuan": "Ernest Ng Zi Xuan",
         "jun-rui": "Jun Rui"
@@ -38,7 +40,7 @@
       "src": "DeveloperGuide.md",
       "title": "Developer Guide",
       "headings": {
-        "ab-3-developer-guide": "AB-3 Developer Guide",
+        "tutorconnect-developer-guide": "TutorConnect Developer Guide",
         "acknowledgements": "Acknowledgements",
         "setting-up-getting-started": "Setting up, getting started",
         "design": "Design",
@@ -105,7 +107,7 @@
       "src": "UserGuide.md",
       "title": "User Guide",
       "headings": {
-        "ab-3-user-guide": "AB-3 User Guide",
+        "tutorconnect-user-guide": "TutorConnect User Guide",
         "quick-start": "Quick start",
         "features": "Features",
         "viewing-help-help": "Viewing help : help",
@@ -129,7 +131,7 @@
       "src": "index.md",
       "title": "",
       "headings": {
-        "addressbook-level-3": "AddressBook Level-3"
+        "tutorconnect": "TutorConnect"
       },
       "headingKeywords": {}
     }
