@@ -18,6 +18,7 @@ import seedu.address.logic.commands.person.FilterPersonCommand;
 import seedu.address.logic.commands.person.FindPersonCommand;
 import seedu.address.logic.commands.person.InfoPersonCommand;
 import seedu.address.logic.commands.person.ListPersonCommand;
+import seedu.address.logic.commands.person.RemarkCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
@@ -75,6 +76,9 @@ public class PersonParser {
 
         case InfoPersonCommand.COMMAND_WORD:
             return new InfoPersonCommandParser().parse(arguments);
+
+        case RemarkCommand.COMMAND_WORD:
+            return new RemarkCommandParser().parse(arguments);
 
         default:
             logger.finer("This user input caused a ParseException: " + userInput);

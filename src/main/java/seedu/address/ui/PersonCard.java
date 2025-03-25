@@ -44,6 +44,8 @@ public class PersonCard extends UiPart<Region> {
     private Label course;
     @FXML
     private Label group;
+    @FXML
+    private Label remark;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.

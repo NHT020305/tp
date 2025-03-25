@@ -15,5 +15,6 @@ public class PersonCliSyntax {
     public static final Prefix PREFIX_PERSON_ID = new Prefix("i/");
     public static final Prefix PREFIX_PERSON_COURSE = new Prefix("c/");
     public static final Prefix PREFIX_PERSON_GROUP = new Prefix("g/");
+    public static final Prefix PREFIX_REMARK = new Prefix("r/");
 
 }
