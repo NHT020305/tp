@@ -1,0 +1,94 @@
+@startuml
+'!include style.puml
+'hide members
+hide circles
+'skinparam class {
+'    FontColor White
+'    BackgroundColor MODEL_COLOR
+'}
+'skinparam interface {
+'    FontColor White
+'    BackgroundColor MODEL_COLOR
+'}
+'
+'skinparam arrowThickness 1.1
+'skinparam arrowColor MODEL_COLOR
+
+'Item with attributes
+interface NamedItem extends Item {
+    getName()
+}
+interface TaggedItem extends Item {
+    getTags()
+}
+interface ItemWithLocation extends Item {
+    getLocation()
+}
+
+'Special shared attributes
+package Commons {
+    class Datetime
+    class Location
+    class Name
+    class Tag
+}
+
+'The interfaces of course use these attributes
+NamedItem --> Name
+TaggedItem --> Tag
+ItemWithLocation --> Location
+
+'And we have Predicates for each of these attributes
+package Predicate {
+    DatetimePredicate --> Datetime
+    LocationPredicate --> Location
+    NamePredicate --> Name
+    TagPredicate --> Tag
+}
+
+'X extends Item
+class Contact implements NamedItem, TaggedItem {
+    id : Id
+    email : Email
+    course : Course
+    group : Group
+}
+class Todo implements NamedItem, TaggedItem, ItemWithLocation
+class Event implements NamedItem, TaggedItem, ItemWithLocation {
+    attendance : Attendance
+}
+
+
+
+Todo --> Datetime : deadline >
+Event --> Datetime : start >
+Event --> Datetime : end >
+
+'Item Managers
+abstract class ItemManager<Item>
+abstract class ItemManagerWithFilteredList<Item>
+abstract class UniqueItemList<Item>
+interface DuplicateChecker<Item>
+
+UniqueItemList --> DuplicateChecker : uses >
+ItemManager --> UniqueItemList : uses >
+ItemManagerWithFilteredList --> ItemManager : uses >
+
+'All 4 abstract classes have concrete implementations for all 3 items
+class ContactDuplicateChecker extends DuplicateChecker
+class TodoDuplicateChecker extends DuplicateChecker
+class EventDuplicateChecker extends DuplicateChecker
+
+class UniqueContactList extends UniqueItemList
+class UniqueTodoList extends UniqueItemList
+class UniqueEventList extends UniqueItemList
+
+class ContactManager implements ItemManager
+class EventManager implements ItemManager
+class TodoManager implements ItemManager
+
+class ContactManagerWithFilteredList extends ItemManagerWithFilteredList
+class EventManagerWithFilteredList extends ItemManagerWithFilteredList
+class TodoManagerWithFilteredList extends ItemManagerWithFilteredList
+
+@enduml

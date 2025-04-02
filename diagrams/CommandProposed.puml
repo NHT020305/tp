@@ -1,0 +1,76 @@
+@startuml
+!include style.puml
+
+hide members
+left to right direction
+
+'Declare all classes
+class CommandResult
+interface Command
+abstract ItemCommand
+abstract AddCommand<Item>
+abstract InfoCommand<Item>
+abstract ListCommand<Item>
+abstract FilterCommand<Item>
+abstract EditCommand<Item>
+abstract DeleteCommand<Item>
+abstract ClearCommand<Item>
+
+'All commands extend ItemCommand which extends Command
+ItemCommand --|> Command
+AddCommand --|> ItemCommand
+InfoCommand --|> ItemCommand
+ListCommand --|> ItemCommand
+FilterCommand --|> ItemCommand
+EditCommand --|> ItemCommand
+DeleteCommand --|> ItemCommand
+ClearCommand --|> ItemCommand
+
+'All concrete commands
+AddContactCommand --|> AddCommand
+AddEventCommand --|> AddCommand
+AddTodoCommand --|> AddCommand
+
+InfoContactCommand --|> InfoCommand
+InfoEventCommand --|> InfoCommand
+InfoTodoCommand --|> InfoCommand
+
+ListContactCommand --|> ListCommand
+ListEventCommand --|> ListCommand
+ListTodoCommand --|> ListCommand
+
+FilterContactCommand --|> FilterCommand
+FilterEventCommand --|> FilterCommand
+FilterTodoCommand --|> FilterCommand
+
+EditContactCommand --|> EditCommand
+EditTodoCommand --|> EditCommand
+EditEventCommand --|> EditCommand
+
+AddTagToContactCommand --|> EditContactCommand
+AddTagToEventCommand --|> EditEventCommand
+AddTagToTodoCommand --|> EditTodoCommand
+
+RemoveTagFromContactCommand --|> EditContactCommand
+RemoveTagFromEventCommand --|> EditEventCommand
+RemoveTagFromTodoCommand --|> EditTodoCommand
+
+AddPersonToEventCommand --|> EditEventCommand
+AddPersonToTodoCommand --|> EditTodoCommand
+RemovePersonFromEventCommand --|> EditEventCommand
+RemovePersonFromTodoCommand --|> EditTodoCommand
+
+AddPersonToLogEventCommand --|> EditEventCommand
+RemovePersonFromLogEventCommand --|> EditEventCommand
+
+DeleteContactCommand --|> DeleteCommand
+DeleteEventCommand --|> DeleteCommand
+DeleteTodoCommand --|> DeleteCommand
+
+ClearContactCommand --|> ClearCommand
+ClearEventCommand --|> ClearCommand
+ClearTodoCommand --|> ClearCommand
+
+Command --> CommandResult : on execution gives >
+
+@enduml

@@ -10,7 +10,17 @@ Class XYZCommand
 package "Parser classes"{
 Class "<<interface>>\nParser" as Parser
 Class AddressBookParser
-Class XYZCommandParser
+package XYZCommandParser {
+    package Contact {
+        class XYZContactCommandParser
+    }
+    package Event {
+        class XYZEventCommandParser
+    }
+    package Todo {
+        class XYZTodoCommandParser
+    }
+}
 Class CliSyntax
 Class ParserUtil
 Class ArgumentMultimap
