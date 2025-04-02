@@ -1,0 +1,57 @@
+@startuml
+!include style.puml
+show attributes
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+skinparam classAttributeFontColor white
+
+Class "<<interface>>\nItem" as Item
+Class "<<interface>>\nNamedItem" as NamedItem
+Class "<<interface>>\nItemWithLocation" as ItemWithLocation
+Class "<<interface>>\nTaggedItem" as TaggedItem
+
+Class Contact {
+  Name name
+  Course course
+  Group group
+  Email email
+  Set<Tag> tags
+}
+
+Class Todo {
+  Datetime deadline
+  Location location
+  TodoStatus status
+  Set<Tag> tags
+}
+
+Class Event {
+  Datetime start
+  Datetime end
+  Location location
+  Set<Tag> tags
+}
+
+NamedItem -up-|> Item
+ItemWithLocation -up-|> Item
+TaggedItem -up-|> Item
+Contact .up.|> NamedItem
+Event .up.|> NamedItem
+Todo .up.|> NamedItem
+Contact .up.|> TaggedItem
+Event .up.|> TaggedItem
+Todo .up.|> TaggedItem
+Event .up.|> ItemWithLocation
+Todo .up.|> ItemWithLocation
+Todo -right-> "*" Contact: "involves"
+Todo --> "1" Name: "is uniquely identified by"
+Event --> "1" Name: "is uniquely identified by"
+Contact --> "1" Id: "is uniquely identified by"
+
+Class Pair<Contact, AttendanceStatus>
+Contact - AttendanceStatus
+(AttendanceStatus, Contact) .. Pair
+Attendance *--> "*" Pair
+Event --> "1" Attendance: "tracks"
+@enduml

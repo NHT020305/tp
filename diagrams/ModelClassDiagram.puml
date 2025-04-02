@@ -1,54 +1,48 @@
 @startuml
+allow_mixing
 !include style.puml
 skinparam arrowThickness 1.1
 skinparam arrowColor MODEL_COLOR
 skinparam classBackgroundColor MODEL_COLOR
 
 Package Model as ModelPackage <<Rectangle>>{
-Class "<<interface>>\nReadOnlyAddressBook" as ReadOnlyAddressBook
+Class "{abstract}\nItemManagerWithFilteredList" as ManagerAndList<T extends Item>
+Class "{abstract}\nItemManager" as Manager<T extends Item>
+Class FilteredList<T extends Item>
+Class "{abstract}\nUniqueItemList" as List<T extends Item>
+Class "<<interface>>\nDuplicateChecker" as Checker<T extends Item>
+Class TManagerWithFilteredList
+Class TManager
+Class UniqueTList
+Class T
 Class "<<interface>>\nReadOnlyUserPrefs" as ReadOnlyUserPrefs
 Class "<<interface>>\nModel" as Model
-Class AddressBook
 Class ModelManager
 Class UserPrefs
-
-Class UniqueContactList
-Class Contact
-Class Address
-Class Email
-Class Name
-Class Phone
-Class Tag
-
-Class I #FFFFFF
+class TDuplicateChecker
 }
 
-Class HiddenOutside #FFFFFF
+Cloud HiddenOutside
 HiddenOutside ..> Model
-
-AddressBook .up.|> ReadOnlyAddressBook
 
 ModelManager .up.|> Model
 Model .right.> ReadOnlyUserPrefs
-Model .left.> ReadOnlyAddressBook
-ModelManager -left-> "1" AddressBook
+Model .right.> ManagerAndList
+TManagerWithFilteredList .right.|> ManagerAndList
+ModelManager -down-> ManagerAndList
+ModelManager .down.> TManagerWithFilteredList
 ModelManager -right-> "1" UserPrefs
 UserPrefs .up.|> ReadOnlyUserPrefs
-
-AddressBook *--> "1" UniqueContactList
-UniqueContactList --> "~* all" Contact
-Contact *--> Name
-Contact *--> Phone
-Contact *--> Email
-Contact *--> Address
-Contact *--> "*" Tag
-
-Contact -[hidden]up--> I
-UniqueContactList -[hidden]right-> I
-
-Name -[hidden]right-> Phone
-Phone -[hidden]right-> Address
-Address -[hidden]right-> Email
-
-ModelManager --> "~* filtered" Contact
+ManagerAndList -down-> "1" FilteredList
+ManagerAndList -down-> "1" Manager
+TManager .right.|> Manager
+TManagerWithFilteredList .down.> TManager
+Manager -down-> "1" List
+UniqueTList .right.|> List
+TDuplicateChecker .right.|> Checker
+UniqueTList .down.> TDuplicateChecker
+TManager .down.> UniqueTList
+List -down-> "1" Checker
+List -right-> "*" T
+FilteredList -down-> "filtered *" T
 @enduml

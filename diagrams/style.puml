@@ -42,6 +42,13 @@ skinparam Package {
 skinparam Class {
     FontColor #FFFFFF
     FontSize 15
+    FontName Arial
+}
+
+skinparam Cloud {
+    BackgroundColor #FFFFFF
+    FontColor #FFFFFF
+    FontSize 15
     BorderThickness 1
     BorderColor #FFFFFF
     StereotypeFontColor #FFFFFF
