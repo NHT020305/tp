@@ -1,0 +1,47 @@
+@startuml
+allow_mixing
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+
+Package Model as ModelPackage <<Rectangle>>{
+Class "<<interface>>\nTodoManagerAndList" as TodoManagerAndList
+Class "{abstract}\nItemInvolvingContactManagerWithFilteredList" as ItemManagerWithList<Todo>
+Class "{abstract}\nItemInvolvingContactManager" as Manager<Todo>
+Class FilteredList<Todo>
+Class "{abstract}\nUniqueItemInvolvingContactList" as List<Todo>
+Class "<<interface>>\nDuplicateChecker" as Checker<Todo>
+Class TodoManagerWithFilteredList
+Class TodoManager
+Class UniqueTodoList
+Class Todo
+Class "<<interface>>\nModel" as Model
+Class ModelManager
+Class TodoDuplicateChecker
+Class "<<interface>>\nManagerAndList" as ManagerAndList<Todo>
+}
+
+Cloud HiddenOutside
+HiddenOutside ..> Model
+ModelManager .up.|> Model
+Model .right.> TodoManagerAndList
+TodoManagerAndList .right.|> ManagerAndList
+TodoManagerAndList .down.> ItemManagerWithList
+TodoManagerWithFilteredList .up.|> TodoManagerAndList
+TodoManagerWithFilteredList .right.|> ItemManagerWithList
+ModelManager -right-> "1" TodoManagerAndList
+ModelManager .down.> TodoManagerWithFilteredList
+ItemManagerWithList -down-> "1" FilteredList
+ItemManagerWithList -down-> "1" Manager
+TodoManager .right.|> Manager
+TodoManagerWithFilteredList .down.> TodoManager
+Manager -down-> "1" List
+UniqueTodoList .right.|> List
+TodoDuplicateChecker .right.|> Checker
+UniqueTodoList .down.> TodoDuplicateChecker
+TodoManager .down.> UniqueTodoList
+List -down-> "1" Checker
+List -right-> "*" Todo
+FilteredList -down-> "filtered *" Todo
+@enduml

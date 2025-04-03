@@ -10,6 +10,7 @@ Class "<<interface>>\nItem" as Item
 Class "<<interface>>\nNamedItem" as NamedItem
 Class "<<interface>>\nItemWithLocation" as ItemWithLocation
 Class "<<interface>>\nTaggedItem" as TaggedItem
+Class "<<interface>>\nItemInvolvingContact" as ItemInvolvingContact
 
 Class Contact {
   Name name
@@ -33,6 +34,7 @@ Class Event {
   Set<Tag> tags
 }
 
+ItemInvolvingContact -up-|> Item
 NamedItem -up-|> Item
 ItemWithLocation -up-|> Item
 TaggedItem -up-|> Item
@@ -44,6 +46,8 @@ Event .up.|> TaggedItem
 Todo .up.|> TaggedItem
 Event .up.|> ItemWithLocation
 Todo .up.|> ItemWithLocation
+Event .up.|> ItemInvolvingContact
+Todo .up.|> ItemInvolvingContact
 Todo -right-> "*" Contact: "involves"
 Todo --> "1" Name: "is uniquely identified by"
 Event --> "1" Name: "is uniquely identified by"

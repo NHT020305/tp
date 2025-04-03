@@ -1,0 +1,47 @@
+@startuml
+allow_mixing
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+
+Package Model as ModelPackage <<Rectangle>>{
+Class "<<interface>>\nContactManagerAndList" as ContactManagerAndList
+Class "{abstract}\nItemNotInvolvingContactManagerWithFilteredList" as ItemManagerWithList<Contact>
+Class "{abstract}\nItemNotInvolvingContactManager" as Manager<Contact>
+Class FilteredList<Contact>
+Class "{abstract}\nUniqueItemNotInvolvingContactList" as List<Contact>
+Class "<<interface>>\nDuplicateChecker" as Checker<Contact>
+Class ContactManagerWithFilteredList
+Class ContactManager
+Class UniqueContactList
+Class Contact
+Class "<<interface>>\nModel" as Model
+Class ModelManager
+Class ContactDuplicateChecker
+Class "<<interface>>\nManagerAndList" as ManagerAndList<Contact>
+}
+
+Cloud HiddenOutside
+HiddenOutside ..> Model
+ModelManager .up.|> Model
+Model .right.> ContactManagerAndList
+ContactManagerAndList .right.|> ManagerAndList
+ContactManagerAndList .down.> ItemManagerWithList
+ContactManagerWithFilteredList .up.|> ContactManagerAndList
+ContactManagerWithFilteredList .right.|> ItemManagerWithList
+ModelManager -right-> "1" ContactManagerAndList
+ModelManager .down.> ContactManagerWithFilteredList
+ItemManagerWithList -down-> "1" FilteredList
+ItemManagerWithList -down-> "1" Manager
+ContactManager .right.|> Manager
+ContactManagerWithFilteredList .down.> ContactManager
+Manager -down-> "1" List
+UniqueContactList .right.|> List
+ContactDuplicateChecker .right.|> Checker
+UniqueContactList .down.> ContactDuplicateChecker
+ContactManager .down.> UniqueContactList
+List -down-> "1" Checker
+List -right-> "*" Contact
+FilteredList -down-> "filtered *" Contact
+@enduml

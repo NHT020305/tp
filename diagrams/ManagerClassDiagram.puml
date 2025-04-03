@@ -1,0 +1,30 @@
+@startuml
+allow_mixing
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+
+Package Model as ModelPackage <<Rectangle>>{
+Class UniqueItemList<T extends Item>
+Class UniqueItemInvolvingContactList<T extends ItemInvolvingContact>
+Class ItemManager<T extends Item, U extends UniqueItemList<T>>
+Class ItemNotInvolvingContactManager<T extends Item>
+Class ItemInvolvingContactManager<T extends ItemInvolvingContact>
+Class ItemManagerWithFilteredList<T extends Item, U extends ItemManager<T, V>, V extends UniqueItemList<T>>
+Class ItemNotInvolvingContactManagerWithFilteredList<T extends Item>
+Class ItemInvolvingContactManagerWithFilteredList<T extends ItemInvolvingContact>
+}
+
+UniqueItemInvolvingContactList .left.> UniqueItemList
+ItemNotInvolvingContactManager .left.> ItemManager
+ItemInvolvingContactManager .left.> ItemManager
+ItemNotInvolvingContactManagerWithFilteredList .left.> ItemManagerWithFilteredList
+ItemInvolvingContactManagerWithFilteredList .left.> ItemManagerWithFilteredList
+ItemInvolvingContactManagerWithFilteredList -down-> ItemInvolvingContactManager
+ItemInvolvingContactManager -down-> UniqueItemInvolvingContactList
+ItemNotInvolvingContactManager -down-> UniqueItemList
+ItemNotInvolvingContactManagerWithFilteredList -down-> ItemNotInvolvingContactManager
+ItemManagerWithFilteredList -down> ItemManager
+ItemManager -down> UniqueItemList
+@enduml

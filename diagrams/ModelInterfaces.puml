@@ -1,0 +1,40 @@
+@startuml
+allow_mixing
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+
+Package Model as ModelPackage <<Rectangle>>{
+Class "<<interface>>\nTodoManagerAndList" as TodoManagerAndList
+Class "<<interface>>\nContactManagerAndList" as ContactManagerAndList
+Class "<<interface>>\nEventManagerAndList" as EventManagerAndList
+Class "<<interface>>\nModel" as Model
+Class ModelManager
+Class "<<interface>>\nManagerAndList" as ManagerAndList<T>
+Class "<<interface>>\nManagerAndList" as MALTodo<Todo>
+Class "<<interface>>\nManagerAndList" as MALContact<Contact>
+Class "<<interface>>\nManagerAndList" as MALEvent<Event>
+Class "<<interface>>\nReadOnlyUserPrefs" as ReadOnlyUserPrefs
+Class UserPrefs
+}
+
+Cloud HiddenOutside
+HiddenOutside .down.> Model
+TodoManagerAndList .down.|> MALTodo
+EventManagerAndList .down.|> MALEvent
+ContactManagerAndList .down.|> MALContact
+MALTodo .down.> ManagerAndList
+MALEvent .down.> ManagerAndList
+MALContact .down.> ManagerAndList
+ModelManager -down-> "1" TodoManagerAndList
+ModelManager -down-> "1" ContactManagerAndList
+ModelManager -down-> "1" EventManagerAndList
+ModelManager .up.|> Model
+ModelManager -down-> "1" UserPrefs
+UserPrefs .up.|> ReadOnlyUserPrefs
+Model .left.> ReadOnlyUserPrefs
+Model .down.> EventManagerAndList
+Model .down.> TodoManagerAndList
+Model .down.> ContactManagerAndList
+@enduml
