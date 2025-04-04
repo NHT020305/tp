@@ -1,8 +1,15 @@
 @startuml
+allowmixing
 !include style.puml
+show attribute
+skinparam classAttributeFontColor white
 skinparam arrowThickness 1.1
 skinparam arrowColor STORAGE_COLOR
 skinparam classBackgroundColor STORAGE_COLOR
+
+package Model as ModelPackage {
+Class "ItemNotInvolvingContactManager" as Manager<Contact>
+}
 
 package Storage as StoragePackage {
 
@@ -14,30 +21,68 @@ Class JsonUserPrefsStorage
 Class "<<interface>>\nStorage" as Storage
 Class StorageManager
 
-package "AddressBook Storage" #F4F6F6{
-Class "<<interface>>\nAddressBookStorage" as AddressBookStorage
-Class JsonAddressBookStorage
-Class JsonSerializableAddressBook
+package "Contact Storage" #F4F6F6{
+Class "<<interface>>\nContactStorage" as ContactStorage
+Class JsonContactStorage
+Class JsonSerializableContactManager
 Class JsonAdaptedContact
+}
+
+package "Todo Storage" #F4F6F6{
+Class "<<interface>>\nTodoStorage" as TodoStorage
+Class JsonTodoStorage
+Class JsonSerializableTodoManager
+Class JsonAdaptedTodo {
+                     List<String> contactIds
+                     }
+}
+
+package "Event Storage" #F4F6F6{
+Class "<<interface>>\nEventStorage" as EventStorage
+Class JsonEventStorage
+Class JsonSerializableEventManager
+Class JsonAdaptedEvent
+Class JsonAdaptedAttendancePair {
+String contactId
+}
+}
+
 Class JsonAdaptedTag
 }
 
-}
-
-Class HiddenOutside #FFFFFF
+Cloud HiddenOutside #FFFFFF
 HiddenOutside ..> Storage
 
 StorageManager .up.|> Storage
 StorageManager -up-> "1" UserPrefsStorage
-StorageManager -up-> "1" AddressBookStorage
+StorageManager -up-> "1" ContactStorage
+StorageManager -up-> "1" TodoStorage
+StorageManager -up-> "1" EventStorage
 
-Storage -left-|> UserPrefsStorage
-Storage -right-|> AddressBookStorage
+Storage -down-|> UserPrefsStorage
+Storage -down-|> ContactStorage
+Storage -down-|> TodoStorage
+Storage -down-|> EventStorage
 
 JsonUserPrefsStorage .up.|> UserPrefsStorage
-JsonAddressBookStorage .up.|> AddressBookStorage
-JsonAddressBookStorage ..> JsonSerializableAddressBook
-JsonSerializableAddressBook --> "*" JsonAdaptedContact
+
+JsonContactStorage .up.|> ContactStorage
+JsonContactStorage ..> JsonSerializableContactManager
+JsonSerializableContactManager --> "*" JsonAdaptedContact
 JsonAdaptedContact --> "*" JsonAdaptedTag
 
+JsonTodoStorage .up.|> TodoStorage
+JsonTodoStorage ..> JsonSerializableTodoManager
+JsonSerializableTodoManager --> "*" JsonAdaptedTodo
+JsonAdaptedTodo --> "*" JsonAdaptedTag
+
+JsonEventStorage .up.|> EventStorage
+JsonEventStorage ..> JsonSerializableEventManager
+JsonSerializableEventManager --> "*" JsonAdaptedEvent
+JsonAdaptedEvent --> "*" JsonAdaptedTag
+JsonAdaptedEvent --> "*" JsonAdaptedAttendancePair
+
+ContactStorage .up.> Manager
+TodoStorage .left.> Manager
+EventStorage .up.> Manager
 @enduml

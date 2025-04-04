@@ -1,60 +1,74 @@
 @startuml
+allowmixing
+
 !include style.puml
 skinparam arrowThickness 1.1
 skinparam arrowColor UI_COLOR_T4
 skinparam classBackgroundColor UI_COLOR
 
-package UI <<Rectangle>>{
+package UI <<Rectangle>> {
 Class "<<interface>>\nUi" as Ui
-Class "{abstract}\nUiPart" as UiPart
+Class "{abstract}\nUiPart<T>" as UiPart
 Class UiManager
 Class MainWindow
-Class HelpWindow
 Class ResultDisplay
-Class ContactListPanel
-Class ContactCard
-Class StatusBarFooter
 Class CommandBox
+Class ListPanel
+Class DisplayableListViewCell
+
+package "card" as card {
+Class "<<interface>>\nCard<T>" as Card
+Class "<<interface>>\nCardFactory<T>" as CardFactory
+Class "GenericCardFactory<T>" as GenericCardFactory
+Class XCard
+}
+
+package "util" as util {
+Class "<<interface>>\nDisplayableItem" as DisplayableItem
+Class "{abstract}\nItemAdapter<T>" as ItemAdapter
+Class "GenericAdapter<T>" as GenericAdapter
+}
 }
 
 package Model <<Rectangle>> {
-Class HiddenModel #FFFFFF
+Cloud HiddenModel #FFFFFF
 }
 
 package Logic <<Rectangle>> {
-Class HiddenLogic #FFFFFF
+Cloud HiddenLogic #FFFFFF
 }
 
-Class HiddenOutside #FFFFFF
-HiddenOutside ..> Ui
+UiManager .up.|> Ui
+GenericCardFactory ..|> CardFactory
+XCard ..|> Card
+GenericAdapter ..|> ItemAdapter
+ItemAdapter ..|> DisplayableItem
 
-UiManager .left.|> Ui
-UiManager -down-> "1" MainWindow
-MainWindow *-down->  "1" CommandBox
-MainWindow *-down-> "1" ResultDisplay
-MainWindow *-down-> "1" ContactListPanel
-MainWindow *-down-> "1" StatusBarFooter
-MainWindow --> "0..1" HelpWindow
-
-ContactListPanel -down-> "*" ContactCard
-
-MainWindow -left-|> UiPart
-
+MainWindow --|> UiPart
 ResultDisplay --|> UiPart
 CommandBox --|> UiPart
-ContactListPanel --|> UiPart
-ContactCard --|> UiPart
-StatusBarFooter --|> UiPart
-HelpWindow --|> UiPart
+ListPanel --|> UiPart
+XCard --|> UiPart
+DisplayableListViewCell --|> UiPart
 
-ContactCard ..> Model
-UiManager -right-> Logic
-MainWindow -left-> Logic
+MainWindow *--> "1" CommandBox
+MainWindow *--> "1" ResultDisplay
+MainWindow *--> "2" ListPanel
+ListPanel o--> "*" DisplayableListViewCell
 
-ContactListPanel -[hidden]left- HelpWindow
-HelpWindow -[hidden]left- CommandBox
-CommandBox -[hidden]left- ResultDisplay
-ResultDisplay -[hidden]left- StatusBarFooter
+UiManager --> "1" MainWindow
+DisplayableListViewCell --> DisplayableItem : renders
+XCard ..> DisplayableItem : < getDisplayCard() creates
+Card --> UiPart : getUiPart() returns >
+GenericCardFactory --> Card : creates >
+XCard --> Model: references >
+GenericAdapter --> Model
+ItemAdapter o--> CardFactory
 
-MainWindow -[hidden]-|> UiPart
+UiManager --> Logic
+MainWindow --> Logic
+ListPanel --> Logic : accesses filtered lists >
+MainWindow ..> GenericCardFactory
+MainWindow ..> GenericAdapter : wraps model items
+
 @enduml

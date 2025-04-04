@@ -1,8 +1,10 @@
 @startuml
 !include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor LOGIC_COLOR_T4
+skinparam classBackgroundColor LOGIC_COLOR
 
-hide members
-left to right direction
+'left to right direction
 
 'Declare all classes
 class CommandResult
@@ -16,6 +18,8 @@ abstract EditCommand<Item>
 abstract DeleteCommand<Item>
 abstract ClearCommand<Item>
 
+
+
 'All commands extend ItemCommand which extends Command
 ItemCommand --|> Command
 AddCommand --|> ItemCommand
@@ -27,49 +31,21 @@ DeleteCommand --|> ItemCommand
 ClearCommand --|> ItemCommand
 
 'All concrete commands
-AddContactCommand --|> AddCommand
-AddEventCommand --|> AddCommand
-AddTodoCommand --|> AddCommand
-
-InfoContactCommand --|> InfoCommand
-InfoEventCommand --|> InfoCommand
-InfoTodoCommand --|> InfoCommand
-
-ListContactCommand --|> ListCommand
-ListEventCommand --|> ListCommand
-ListTodoCommand --|> ListCommand
-
-FilterContactCommand --|> FilterCommand
-FilterEventCommand --|> FilterCommand
-FilterTodoCommand --|> FilterCommand
-
-EditContactCommand --|> EditCommand
-EditTodoCommand --|> EditCommand
+AddXCommand --|> AddCommand
+InfoXCommand --|> InfoCommand
+ListXCommand --|> ListCommand
+FilterXCommand --|> FilterCommand
+EditXCommand --|> EditCommand
+AddTagToXCommand --|> EditXCommand
+RemoveTagFromXCommand --|> EditXCommand
+AddPersonToYCommand --|> EditYCommand
+EditYCommand --|> EditCommand
 EditEventCommand --|> EditCommand
-
-AddTagToContactCommand --|> EditContactCommand
-AddTagToEventCommand --|> EditEventCommand
-AddTagToTodoCommand --|> EditTodoCommand
-
-RemoveTagFromContactCommand --|> EditContactCommand
-RemoveTagFromEventCommand --|> EditEventCommand
-RemoveTagFromTodoCommand --|> EditTodoCommand
-
-AddPersonToEventCommand --|> EditEventCommand
-AddPersonToTodoCommand --|> EditTodoCommand
-RemovePersonFromEventCommand --|> EditEventCommand
-RemovePersonFromTodoCommand --|> EditTodoCommand
-
+RemovePersonFromYCommand --|> EditYCommand
 AddPersonToLogEventCommand --|> EditEventCommand
 RemovePersonFromLogEventCommand --|> EditEventCommand
-
-DeleteContactCommand --|> DeleteCommand
-DeleteEventCommand --|> DeleteCommand
-DeleteTodoCommand --|> DeleteCommand
-
-ClearContactCommand --|> ClearCommand
-ClearEventCommand --|> ClearCommand
-ClearTodoCommand --|> ClearCommand
+DeleteXCommand --|> DeleteCommand
+ClearXCommand --|> ClearCommand
 
 Command --> CommandResult : on execution gives >
 

@@ -1,5 +1,6 @@
 @startuml
 !include style.puml
+allowmixing
 skinparam arrowThickness 1.1
 skinparam arrowColor LOGIC_COLOR_T4
 skinparam classBackgroundColor LOGIC_COLOR
@@ -9,40 +10,32 @@ Class XYZCommand
 
 package "Parser classes"{
 Class "<<interface>>\nParser" as Parser
-Class AddressBookParser
-package XYZCommandParser {
-    package Contact {
-        class XYZContactCommandParser
-    }
-    package Event {
-        class XYZEventCommandParser
-    }
-    package Todo {
-        class XYZTodoCommandParser
-    }
-}
+Class ParserImpl
+Class XYZCommandParser
 Class CliSyntax
 Class ParserUtil
 Class ArgumentMultimap
 Class ArgumentTokenizer
-Class Prefix
+Class PrefixAlias
+class Prefix
 }
 
-Class HiddenOutside #FFFFFF
-HiddenOutside ..> AddressBookParser
+Cloud HiddenOutside #FFFFFF
+HiddenOutside ..> ParserImpl
 
-AddressBookParser .down.> XYZCommandParser: <<create>>
+ParserImpl .down.> XYZCommandParser: <<create>>
 
 XYZCommandParser ..> XYZCommand : <<create>>
-AddressBookParser ..> Command : <<use>>
+ParserImpl ..> Command : <<use>>
 XYZCommandParser .up.|> Parser
 XYZCommandParser ..> ArgumentMultimap
 XYZCommandParser ..> ArgumentTokenizer
 ArgumentTokenizer .left.> ArgumentMultimap
 XYZCommandParser ..> CliSyntax
-CliSyntax ..> Prefix
+CliSyntax ..> PrefixAlias
 XYZCommandParser ..> ParserUtil
-ParserUtil .down.> Prefix
-ArgumentTokenizer .down.> Prefix
+ParserUtil .down.> PrefixAlias
+ArgumentTokenizer .down.> PrefixAlias
+PrefixAlias -.right.> Prefix
 XYZCommand -up-|> Command
 @enduml
