@@ -57,7 +57,7 @@ If you can type fast, TutorConnect can get your contact management tasks done fa
   e.g. in `add --name NAME`, `NAME` is a parameter which can be used as `add --name John Doe`.
 
 * Parameters in square brackets are optional.<br>
-  e.g `--name NAME [--tag TAG(S)]` can be used as `--name John Doe --tag friend`, `--name John Doe`, or `--name John Doe --tag enemy must-be-destroyed`.
+  e.g. `--name NAME [--tag TAG(S)]` can be used as `--name John Doe --tag friend`, `--name John Doe`, or `--name John Doe --tag enemy must-be-destroyed`.
 
 * Parameters with optional plural markers can be specified a positive integer number of times.
   Note that this rule can be combined with the previous one to represent a parameter that can be specified a non-negative integer number of times.<br>
@@ -79,199 +79,200 @@ If you can type fast, TutorConnect can get your contact management tasks done fa
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
   </box>
 
-## Contact: `contact`
+## Common `item` Commands:
+This section contains the common commands shared between `contact`, `event` and `todo`. It serves as a unified section, and it aims reduce verbosity of each `item` guide. The individual section only contains unique operations to that `item`.  
 
-A contact supports the following commands.
+An `item` in this section is defined as one of the following `contact`, `event` and `todo`. Please replace `item` with the command of interest.
+The constraints of the different flags are defined clearer at the end of all the sections. The guide below serves as an overview and example of how to use these commands.
 
-### Adding a contact: `add`
-Adds a contact to the app.
+### Adding an `item`: `add`
+An `item` is added to the application.
 
-Format: `contact add --id ID --name NAME --email EMAIL --course COURSE --group GROUP [--tag TAG(S)]`
+**Format & Examples:**
+* `contact`:
+  * Format: `contact add --id ID --name NAME --email EMAIL --course COURSE --group GROUP [--tag TAG(S)]`
+  * Example: `contact add --id A1234567A --name John Doe --email johnd@example.com --course CS50 --group T01 --tag friends owesMoney`
 
-**Tip:** A contact can have any number of tags (including 0)
+* `event`:
+  * Format: `event add --name NAME --start START_DATETIME --end END_DATETIME --location LOCATION [--tag TAG(S)]`
+  * Example: `event add --name CS2040S tutorial --start 24-08-26 12:00 --end 24-08-26 14:00 --location NUS SoC COM1 --tag algorithms dataStructures`
 
-**Important**: The contact's ID must be unique.
+* `todo`:
+  *  `todo add --name NAME --location LOCATION --deadline DEADLINE [--tag TAG(S)]`
+  * Example: `todo add --name Final Submission --deadline 24-08-26 12:00 --location NUS SoC COM1 --tag CS1234`
 
-Examples:
-* `contact add --id A1234567A --name John Doe --email johnd@example.com --course CS50 --group T01 --tag friends owesMoney`
+**Pro-tip**: The various `items` will be added to their respective lists. `contact` will be added to the contact list on the right side, `event` and `todo` will be added to the list on the bottom left side to their respective list.
 
-### Editing a contact: `edit`
-Edits the details of the contact identified by the index number in the currently displayed contact list. Only the fields specified in the command will be updated; all others remain unchanged.
+**Important**: Uniqueness for `contact` is defined as having different `ID`. Uniqueness for `event` and `todo` is defined to have different `name`
 
-Format:
-`contact edit INDEX [--id ID] [--name NAME] [--email EMAIL] [--course COURSE] [--group GROUP] [--tag TAG(S)]`
+### Editing an `item`: `edit`
+Edits the details of the `item` identified by the index number in the currently displayed on their respective item list. Only the fields specified in the command will be updated; all others remain unchanged.
 
-* `INDEX` refers to the contact to be edited, based on its position in the displayed contact list.
+**Format & Examples**:
+* `contact`
+  * Format: `contact edit CONTACT_INDEX [--id ID] [--name NAME] [--email EMAIL] [--course COURSE] [--group GROUP] [--tag TAG(S)]`
+  * Example: `contact edit 1 --email johndoe@example.com --tag --name John Doe` 
 
-* Fields that are not included in the command will remain unchanged. You can update any combination of fields at once. At least 1 field should be edited.
+* `event`
+  * Format: `event edit EVENT_INDEX [--name NAME] [--start START_TIME] [--end END_TIME] [--location LOCATION] [--contact CONTACT_INDEX/INDICES] [--tag TAG(S)]` 
+  * Example: `event edit 2 --start 25-03-15 10:00 --end 25-03-15 12:00`
+* `todo`
+  * Format: `todo edit TODO_INDEX [--name NAME] [--deadline DEADLINE] [--location LOCATION] [--status STATUS] [--contact CONTACT_INDEX/INDICES] [--tag TAG(S)]`
+  * Example: `todo edit 2 --deadline 25-03-15 10:00 --location COM2-0208 --tag --status false`
 
-* If `--tag` is provided with no value, all tags will be cleared.
+**Important**: `ITEM_INDEX` is the index present in the UI, `CONTACT_INDEX` represents the index of the item on the item on the contact list on right. `EVENT/TODO_INDEX` is the index of the `event` or `todo` of the selected list on the bottom left.
 
-Examples:
+**Pro Tip**: At least one of the flags must be present to be edited.
 
-* `contact edit 1 --email johndoe@example.com`
+**Pro-er Tip**: If `--tag` is empty, all the tags for the `item` will be cleared. Not the rest of the data fields though...
 
-* `contact edit 3 --name Jack Doe`
+### Deleting an `item`: `delete`
+Deletes an item from its corresponding list. Removing it from *existence*. 
 
-* `contact edit 4 --group CS2103T`
+**Format & Examples**
+* `item`
+  * Format: `item delete CONTACT_INDEX`
+  * Example: 
+    * `contact delete 1`
+    * `event delete 2`
+    * `todo delete 3`
 
-### Deleting a contact: `delete`
+**Important**: `ITEM_INDEX` is the index present in the UI, `CONTACT_INDEX` represents the index of the item on the item on the contact list on right. `EVENT/TODO_INDEX` is the index of the `event` or `todo` of the selected list on the bottom left.
 
-Deletes the contact identified by the index number used in the displayed contact list.
+### Getting information: `info` 
+Displays the full information of the `item` of interest as requested by the user.
 
-Format: `contact delete INDEX`
+**Format & Examples**
+* Format: `item info ITEM_INDEX`
+  * Example: 
+    * `contact info 1`
+    * `event info 2`
+    * `todo info 3`
 
-Example:
-* `contact delete 1`
+**Important**: `ITEM_INDEX` is the index present in the UI, `CONTACT_INDEX` represents the index of the item on the item on the contact list on right. `EVENT/TODO_INDEX` is the index of the `event` or `todo` of the selected list on the bottom left.
 
-### Displaying information of contact: `info`
-Displays the complete information belonging to the contact identified by the index number used in the displayed contact list.
+**Pro Tip**: You can click on the `item` card to view the item of interest. This operation is equivalent to using the `info` command.
 
-Format: `contact info INDEX`
+### Getting full `item` list: `list`
+Displaying the full `item` list. Useful for displaying the full `item` list after `filter` operation.
 
-Example:
-* `contact info 1`
+**Format & Examples**
+* Format: `item list`
+  * Example: 
+    * `contact list`
+    * `event list`
+    * `todo list`
 
-### Clearing contact list: `clear`
-Clears the contact list.
+**Pro-tip & Important**: The refresh button on the side is **NOT A UNDO BUTTON**, clicking the button here `list` the current list that is being viewed.
 
-Format: `contact clear`
+### Clearing `item` list: `clear`
+Clears the entire list of the chosen `item` list.
 
-### Tagging a contact: `tag`
-Adds one or more tags to the specified contact. Tags help categorize and filter contacts more easily (e.g., by priority, role, type, etc.).
+**Format & Examples**
+* Format: `item clear`
+  * Example: 
+    * `contact clear`
+    * `event clear`
+    * `todo clear`
 
-Format: `contact tag INDEX --tag TAG(S)`
+**WARNING**: The cleared `item` list *cannot* be undone, it is **NUKING** the `item` list.
 
-* `INDEX` refers to the index of the contact in the currently displayed contact list.
+### Filtering an `item`: `filter`
+Filters the list of `item` based on one or more criteria. You can search by each `item`'s specified `--column` or linked contacts using logical operators to combine multiple values.
 
-* Duplicate tags (already added to the contact) are not allowed.
+Format: `item filter --COLUMN OPERATOR: VALUE(S) [...]`
 
-Example:
-* `contact tag 1 --tag important need-help`
+Supported `contact` columns
+* `--name`. Filter by `contact` name.
+* `--email`. Filter by `contact` email.
+* `--id`. Filter by `contact` ID.
+* `--course`. Filter by `contact` course.
+* `--group`. Filter by `contact` group.
+* `--tag`. Filter by `contact` tag.
 
-### Untagging a contact: `untag`
-Removes one or more tags from the specified contact.
+Supported `event` columns:
+* `--name`
+* `--start`. In the form of `[<INTERVAL_START>/<INTERVAL_END>]`.
+* `--end`. In the form of `[<INTERVAL_START>/<INTERVAL_END>]`.
+* `--location`.
+* `--tag`
+* `--contact`.
+* `[<INTERVAL_START>/<INTERVAL_END>]`.
 
-Format: `contact untag INDEX --tag TAG(S)`
+Supported `todo` columns:
+* `--name`.
+* `--location`.
+* `--deadline`. In the form of
+* `--status`.
+* `--tag`.
+* `--contact`.
 
-* `INDEX` refers to the index of the contact in the currently displayed contact list.
-
-* Tags are case-sensitive and must match the tag(s) assigned to the contact.
-
-Example:
-* `contact untag 1 --tag important weekly`
-
-### Filtering contacts: `filter`
-Filters the list of contacts based on one or more criteria. You can search by contacts name, time, location, tags, or linked contacts using logical operators to combine multiple values.
-
-Format:
-`contact filter --COLUMN OPERATOR: VALUE(S) [...]`
-
-Supported columns:
-* `--name`: contact name.
-* `--id`: contact id.
-* `--email`: contact email.
-* `--course`: contact course.
-* `--group`: contact group.
-* `--tag`: tags.
-
-Operators (optional):
+`Operators` (optional):
 * `and` (default): All values must match.
 * `or`: At least one value must match.
-* `nand`: None of the values must match.
-* `nor`: Reject all values.
+* `nand`: Not all the values must match.
+* `nor`: None of the values must match.
 
 If an operator is not provided, it defaults to `and`. If an unrecognized operator is provided, it will be treated as a value. If multiple valid operators are provided, the first one will be applied and the rest will be treated as values.
 
-**Value formats**:
-
-Name, ID, email, course, group, and tags:
-* Provide one or more keywords separated by spaces.
-* Keywords are case-insensitive and support partial matches.
+Provide one or more keywords separated by spaces.
+Keywords are case-insensitive and support partial matches.
 
 Examples:
 * `contact filter --id or: 12 13`.
-    * Find students with ID 12 or 13.
+  * Find students with ID 12 or 13.
 
-* `contact filter --name John Doe --course CS1010S --group or: T01 T02 T03`
-    * Find contacts with both "Darren" and "Tan" in their name who enroll in course CS1010S and class T01, T02, or T03.
+* `contact filter --name nand: enemy Hater --tag and: handsome smart`.
+  * Find contacts whose names do not contain both "enemy" and "Hater" and are tagged with both "handsome" and "smart".
 
-* `contact filter --name nand: enemy Hater --tag and: handsome smart`
-    * Find contacts whose names do not contain both "enemy" and "Hater" and are tagged with both "handsome" and "smart".
+* `event filter --name or: Exam PRESENTATION`.
+  * Find events whose name contains at least one of the keywords "exam" or "presentation."
+
+* `event filter --name CS1010S eXAM --start or: [25-03-13 23:59/25-03-20 23:59] [25-03-27 23:59/-]`
+    * Find events whose name contains both the keywords "`CS1010S`" and "`exam`" and whose start time is between `25-03-13 23:59` and `25-03-20 23:59`(inclusive) or after `25-03-27 23:59` (inclusive).
+
+* `todo filter --name or: Exam REPORT`.
+  * Find todos whose name contains at least one of the keywords `"exam"` or `"report"`.
+
+* `todo filter --name CS1010S grading --deadline or: [25-04-13 23:59/25-04-20 23:59] [25-04-27 23:59/-]`
+  * Find todos whose name contains both the keywords "`CS1010S`" and "`grading`" and whose start time is between `25-04-13 23:59` and `25-04-20 23:59`(inclusive) or after `25-04-27 23:59` (inclusive).
+
+**Tip**: Do not get overwhelmed! You can simply use filter as a simple search tool. Logical operations in the examples are for specialized queries so do try and play around with the combinations.
+
+**Fun fact**: For filtering on intervals. While you are allowed to put the start of the interval after the end of the interval, this may (*obviously!*) result in unhelpful results.
+
+### Tagging items: `tag`
+Adding `tag` to a specified `item`.
+**Format & Examples**
+* Format: `item tag ITEM_INDEX --tag TAG(S)`
+  * Example: 
+    * `contact tag 1 --tag friend`
+    * `event tag 2 --tag presenting guest vip`
+    * `todo tag 4 --tag grading`
+
+**Important**: At least one `tag` must be provided.
+
+**Pro-tip**: You can add multiple tags for any `item` that you are interested in.
+
+### Untagging items: `untag`
+Removing specified `tag` at the provided `item`'s `index`.
+
+**Format & Examples**
+* Format: `item untag ITEM_INDEX --tag TAG(s)`
+  * Example: 
+    * `contact untag 1 --tag friend`
+    * `event untag 2 --tag presenting guest vip`
+    * `todo untag 4 --tag grading`
 
 ## Event: `event`
-
-### Adding an event: `add`
-Adds an event to the app.
-
-Format: `event add --name NAME --start START_DATETIME --end END_DATETIME --location LOCATION [--tag TAG(S)]`
-
-**Important:** start time and end time format is `YY-MM-DD HH:MM`, where `HH` is in 24 hour format and start time must be earlier than end time.
-
-**Important**: The event's name must be unique.
-
-**Tip:** An event can have any number of tags (including 0)
-
-Examples:
-* `event add --name CS2040S tutorial --start 24-08-26 12:00 --end 24-08-26 14:00 --location NUS SoC COM1 --tag algorithms`
-* `event add --name CS1010S tutorial --start 25-01-31 14:00 --end 25-01-31 18:00 --location NUS BIZ2 --tag tut29 tut30`
-
-### Editing an event: `edit`
-Edits the details of the event identified by the index number in the currently displayed event list. Only the fields specified in the command will be updated; all others remain unchanged.
-
-Format:
-`event edit INDEX [--name NAME] [--start START_TIME] [--end END_TIME] [--location LOCATION] [--contact CONTACT_INDEX/INDICES] [--tag TAG(S)]`
-
-* `INDEX` refers to the event to be edited, based on its position in the displayed event list.
-
-* Fields that are not included in the command will remain unchanged. You can update any combination of fields at once. At least 1 field should be edited.
-
-* If `--tag` is provided with no value, all tags will be cleared.
-
-Important:
-
-* `INDEX` must be a positive integer.
-
-* `CONTACT_INDEX/INDICES` refers to the index(es) in the contact list currently displayed on the right.
-
-Examples:
-
-* `event edit 1 --name Project Meeting`
-
-* `event edit 2 --start 25-03-15 10:00 --end 25-03-15 12:00`
-
-* `event edit 3 --location COM2-0208 --tag project`
-
-* `event edit 4 --contact 1 2 3`
-
-### Deleting an event: `delete`
-
-Deletes the event identified by the index number used in the displayed event list.
-
-Format: `event delete INDEX`
-
-Example:
-* `event delete 1`
-
-### Displaying information of event: `info`
-Displays the complete information belonging to the event identified by the index number used in the displayed event list.
-
-Format: `event info INDEX`
-
-Example:
-* `event info 1`
-
-### Clearing event list: `clear`
-Clears the event list.
-
-Format: `event clear`
+A `event` is a task with a duration that can be associated with multiple contacts to indicate their involvement / attendance. The `event` supports the following unique operations.
 
 ### Linking contacts: `link`
 Associates one or more contacts to an event. Useful for keeping track of which contacts are involved in a particular event.
 
-Format: `event link INDEX --contact CONTACT_INDEX/INDICES`
+Format: `event link EVENT_INDEX --contact CONTACT_INDEX/INDICES`
 
-* `INDEX` refers to the index of the event in the displayed event list.
+* `EVENT_INDEX` refers to the index of the event in the displayed event list on the bottom left.
 
 * `CONTACT_INDEX/INDICES` refers to the index(es) of the contact(s) in the currently displayed contact list.
 
@@ -295,37 +296,6 @@ Format: `event unlink EVENT_INDEX --contact CONTACT_INDEX/INDICES`
 
 Examples:
 * `event unlink 1 --contact 3 4`
-
-### Tagging an event: `tag`
-Adds one or more tags to the specified event. Tags help categorize and filter events more easily (e.g., by priority, role, type, etc.).
-
-Format: `event tag EVENT_INDEX --tag TAG(S)`
-
-* `EVENT_INDEX` refers to the index of the event in the currently displayed event list.
-
-* You can add one or more tags by listing them after `--tag`.
-
-* Duplicate tags (already added to the event) are not allowed.
-
-* Tags are case-sensitive and stored as-is.
-
-Example:
-* `event tag 1 --tag TA Important`
-
-### Untagging an event: `untag`
-Removes one or more tags from the specified event. Useful for decluttering or updating tag information as event details change.
-
-Format: `event untag EVENT_INDEX --tag TAG(S)`
-
-* `EVENT_INDEX` refers to the index of the event in the currently displayed event list.
-
-* You can remove one or more tags by listing them after `--tag`.
-
-* Tags are case-sensitive and must match the tag(s) assigned to the event.
-
-**Important**: `EVENT_INDEX` must be a positive integer.
-
-Example:
 * `event untag 1 --tag important weekly`
 
 ### Logging attendance for an event: `log`
@@ -361,124 +331,14 @@ Format:
 
 * You cannot unlog a contact that is already unlogged
 
-**Important:** EVENT_INDEX must be a positive integer.
-
-**Tip:** Use event info to view currently logged contacts and their indices.
+**Tip:** You can click on the event to display the full information.
 
 Example:
 `event unlog 1 --contact 1 2 3`
 (Removes attendance logs for contacts 1, 2, and 3 from the event with index 1)
 
-### Filtering events: `filter`
-Filters the list of events based on one or more criteria. You can search by event name, time, location, tags, or linked contacts using logical operators to combine multiple values.
-
-Format:
-`event filter --<COLUMN> [<OPERATOR>:] <VALUE(S)> [...]`
-
-Supported columns:
-* `--name`: Event name.
-* `--start`: Start time.
-* `--end`: End time.
-* `--location`: Event location.
-* `--tag`: Tags.
-* `--contact`: Linked contacts.
-
-Operators (optional):
-* `and` (default): All values must match.
-* `or`: At least one value must match.
-* `nand`: None of the values must match.
-* `nor`: Reject all values.
-
-If an operator is not provided, it defaults to `and`.
-
-**Value formats**:
-
-Name, Location and Tag:
-* Provide one or more keywords separated by spaces.
-* Keywords are case-insensitive and support partial matches.
-
-Start & End Time:
-* Provide one or more closed intervals, each written as: `[<INTERVAL_START>/<INTERVAL_END>]`.
-* Each datetime must follow the format: `YY-MM-DD HH:MM`.
-* At least one of the two bounds must be specified. You can replace an empty bounds using `-`.
-
-Contact:
-* Provide contact indices (as shown in the current contact list).
-
-* Matches events linked to all the specified contacts (default `and`, unless overridden).
-
-Examples:
-* `event filter --name or: Exam PRESENTATION`.
-    * Find todos whose name contains at least one of the keywords "exam" or "presentation."
-
-* `event filter --name CS1010S eXAM --start or: [25-03-13 23:59/25-03-20 23:59] [25-03-27 23:59/-]`
-    * Find todos whose name contains both the keywords `"CS1010S"` and `"exam"` and whose start time is between `25-03-13 23:59` and `25-03-20 23:59`(inclusive) or after `25-03-27 23:59` (inclusive).
-
-* `event filter --location nand: NUS Home --contact 1 2 3`
-    * Find todos whose location does not contain the keywords "NUS" or "home" and which are is linked to the people currently at index 1, 2 and 3.
-
 ## Todo: `todo`
-
 A todo is a task with a deadline that can be associated with multiple contacts to indicate their involvement. It supports the following commands.
-
-### Adding a todo: `add`
-Adds a todo to the app.
-
-Format: `todo add --name NAME --location LOCATION --deadline DEADLINE [--tag TAG(S)]`
-
-**Tip:** A todo can have any number of tags (including 0)
-
-**Important**: The contact's name must be unique.
-
-Examples:
-* `todo add --name Final Submission --deadline 24-08-26 12:00 --location NUS SoC COM1 --tag CS1234`
-* `todo add --name CS1010S mission --deadline 24-05-26 12:00 --location Coursemology --tag urgent struggling`
-
-### Editing an todo: `edit`
-Edits the details of the todo identified by the index number in the currently displayed todo list. Only the fields specified in the command will be updated; all others remain unchanged.
-
-Format:
-`event edit INDEX [--name NAME] [--deadline DEADLINE] [--location LOCATION] [--status STATUS] [--contact CONTACT_INDEX/INDICES] [--tag TAG(S)]`
-
-* `INDEX` refers to the todo to be edited, based on its position in the displayed todo list.
-
-* `STATUS` can only be `true` or `false`.
-
-* `CONTACT_INDEX/INDICES` refers to the index(es) of the contact(s) in the currently displayed contact list, which will be linked to the todo.
-
-* Fields that are not included in the command will remain unchanged. You can update any combination of fields at once. At least 1 field should be edited.
-
-* If `--tag` is provided with no value, all tags will be cleared.
-
-Examples:
-
-* `todo edit 1 --name Project Meeting`
-
-* `todo edit 2 --deadline 25-03-15 10:00 --location COM2-0208 --tag`
-
-* `todo edit 4 --name Training --contact 1 2 3`
-
-### Deleting a todo: `delete`
-
-Deletes the todo identified by the index number used in the displayed todo list.
-
-Format: `todo delete INDEX`
-
-Example:
-* `todo delete 1`
-
-### Displaying information of todo: `info`
-Displays the complete information belonging to the todo identified by the index number used in the displayed todo list.
-
-Format: `todo info INDEX`
-
-Example:
-* `todo info 1`
-
-### Clearing todo list: `clear`
-Clears the todo list.
-
-Format: `todo clear`
 
 ### Linking contacts: `link`
 Associates one or more contacts to a todo. Useful for keeping track of which contacts are involved in a particular todo.
@@ -492,48 +352,12 @@ Format: `todo link TODO_INDEX --contact CONTACT_INDEX/INDICES`
 Examples:
 * `todo link 1 --contact 1 3 4`
 
-### Unlinking contacts: `unlink`
-Removes the association between one or more contacts and a specific todo.
-
-Format: `todo unlink TODO_INDEX --contact CONTACT_INDEX/INDICES`
-
-* `TODO_INDEX` refers to the index of the todo in the displayed event todo.
-
-* `CONTACT_INDEX/INDICES` refers to the index(es) of the contact(s) to be unlinked from the event based on the list displayed by the `info` command. You can unlink multiple contacts by providing more than one contact index.
-
-Examples:
-* `todo unlink 1 --contact 3 4`
-
-### Tagging a todo: `tag`
-Adds one or more tags to the specified todo. Tags help categorize and filter todos more easily (e.g., by priority, role, type, etc.).
-
-Format: `todo tag INDEX --tag TAG(S)`
-
-* `INDEX` refers to the index of the todo in the currently displayed todo list.
-
-* Duplicate tags (already added to the todo) are not allowed.
-
-Example:
-* `todo tag 1 --tag important need-help`
-
-### Untagging a todo: `untag`
-Removes one or more tags from the specified todo.
-
-Format: `event untag INDEX --tag TAG(S)`
-
-* `INDEX` refers to the index of the todo in the currently displayed todo list.
-
-* Tags are case-sensitive and must match the tag(s) assigned to the todo.
-
-Example:
-* `todo untag 1 --tag important weekly`
-
 ### Mark a todo as done: `mark`
 Mark a todo as completed.
 
-Format: `todo mark INDEX`
+Format: `todo mark TODO_INDEX`
 
-* `INDEX` refers to the index of the todo in the displayed todo list.
+* `TODO_INDEX` refers to the index of the todo in the displayed todo list.
 
 * The todo must not be already marked as done.
 
@@ -543,60 +367,25 @@ Example:
 ### Mark a todo as not done: `unmark`
 Mark a todo as not done. This reverses the effect of the `mark` command.
 
-Format: `todo unmark INDEX`
+Format: `todo unmark TODO_INDEX`
 
-* `INDEX` refers to the index of the todo in the displayed todo list.
+* `TODO_INDEX` refers to the index of the todo in the displayed todo list.
 
 * The todo must not be already marked as not done.
 
 Example:
 `todo unmark 20`
 
-### Filtering todos: `filter`
-Filters the list of todos based on one or more criteria. You can search by todos name, time, location, tags, or linked contacts using logical operators to combine multiple values.
-
-Format:
-`todo filter --COLUMN OPERATOR: VALUE(S) [...]`
-
-Supported columns:
-* `--name`: Todo name.
-* `--deadline`: Todo deadline.
-* `--location`: Todo location.
-* `--status`: Todo status
-* `--tag`: Tags.
-* `--contact`: Linked contacts.
-
-Operators (optional):
-* `and` (default): All values must match.
-* `or`: At least one value must match.
-* `nand`: None of the values must match.
-* `nor`: Reject all values.
-
-If an operator is not provided, it defaults to `and`. If an unrecognized operator is provided, it will be treated as a value. If multiple valid operators are provided, the first one will be applied and the rest will be treated as values.
-
-**Value formats**:
-
-Name, Location, and Tags:
-* Provide one or more keywords separated by spaces.
-* Keywords are case-insensitive and support partial matches.
-
-DEADLINE:
-* Provide one or more closed intervals, each written as: `[<INTERVAL_START>/<INTERVAL_END>]`.
-* Each datetime must follow the format: `YY-MM-DD HH:MM`.
-* You can use `-` to replace the `START` or the `END` to signify no lower/upper bound. At least one of the two bounds must be specified.
-
-Contact:
-* Provide contact indices (as shown in the current contact list).
-
-Examples:
-* `todo filter --name or: Exam REPORT`.
-    * Find todos whose name contains at least one of the keywords "exam" or "report."
-
-* `todo filter --name CS1010S grading --deadline or: [25-04-13 23:59/25-04-20 23:59] [25-04-27 23:59/-]`
-    * Find todos whose name contains both the keywords `"CS1010S"` and `"grading"` and whose start time is between `25-04-13 23:59` and `25-04-20 23:59`(inclusive) or after `25-04-27 23:59` (inclusive).
-
-* `todo filter --location nand: NUS Science --contact 1 2 3`
-    * Find todos whose location does not contain the keywords "NUS" or "Science" and which are linked to the people currently at index 1, 2 and 3.
+## Table of Constraints (Flags)
+|Parameter|Constraint|item/command|Example|
+|:---|:---|:---|:--|
+|`--name`|Can contain multiple words having special characters, but the words cannot start with `-`. Must not be blank.|`contact`, `event`, `todo`|+ `--name David Li `<br>- `--name -Alvin`|
+| `--email`  | Must follow `local-part@domain` format.<br><br>**Local part:**<br>- Alphanumeric + allowed: `+`, `_`, `.`, `-`<br>- Cannot start/end with special characters<br><br>**Domain:**<br>- Labels separated by `.`<br>- Ends with label ≥ 2 chars<br>- Each label starts/ends with alphanumeric<br>- Hyphens allowed *within* labels only |`contact`|+ `user.name+filter@example-domain.com`<br>- `-username@domain.com`<br>- `user@.com`|
+|`--id`||||
+|`--course`||||
+|`--group`||||
+|`--tag`||||
+|`--name`||||
 
 ## Miscellaneous
 
@@ -642,7 +431,7 @@ Examples:
 ## FAQ
 
 **Q**: How do I transfer my data to another Computer?<br>
-**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous AddressBook home folder.
+**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous TutorConnect home folder.
 
 --------------------------------------------------------------------------------------------------------------------
 
