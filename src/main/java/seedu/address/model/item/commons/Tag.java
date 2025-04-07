@@ -10,7 +10,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Tag {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Tag must be a word not starting with a hyphen, and it should not be blank";
+            "Invalid tag supplied. Tag must be a single word not starting with a hyphen, and it must not be blank";
     public static final String VALIDATION_REGEX = "^(?!-)\\S+$";
 
     public final String tagName;
@@ -45,12 +45,12 @@ public class Tag {
         }
 
         Tag otherTag = (Tag) other;
-        return tagName.equals(otherTag.tagName);
+        return tagName.toLowerCase().equals(otherTag.tagName.toLowerCase());
     }
 
     @Override
     public int hashCode() {
-        return tagName.hashCode();
+        return tagName.toLowerCase().hashCode();
     }
 
     /**

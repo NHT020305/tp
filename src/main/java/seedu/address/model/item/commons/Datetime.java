@@ -15,7 +15,7 @@ import seedu.address.commons.util.DatetimeUtil;
 public class Datetime implements Comparable<Datetime> {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Datetime should be in the format YY-MM-DD HH:MM, where HH is in 24-hour format.";
+            "Invalid datetime supplied. Datetime must have format YY-MM-DD HH:MM, where HH is in 24-hour format.";
 
     public final LocalDateTime datetime;
 

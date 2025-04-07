@@ -57,9 +57,9 @@ public class EmailTest {
         assertTrue(Email.isValidEmail("PeterJack.1190@example.com")); // period in local part
         assertTrue(Email.isValidEmail("PeterJack+1190@example.com")); // '+' symbol in local part
         assertTrue(Email.isValidEmail("PeterJack-1190@example.com")); // hyphen in local part
-        assertTrue(Email.isValidEmail("a@bc")); // minimal
-        assertTrue(Email.isValidEmail("test@localhost")); // alphabets only
-        assertTrue(Email.isValidEmail("123@145")); // numeric local part and domain name
+        assertTrue(Email.isValidEmail("a@bc.something")); // minimal
+        assertTrue(Email.isValidEmail("test@localhost.xy")); // alphabets only
+        assertTrue(Email.isValidEmail("123@145.co")); // numeric local part and domain name
         assertTrue(Email.isValidEmail("a1+be.d@example1.com")); // mixture of alphanumeric and special characters
         assertTrue(Email.isValidEmail("peter_jack@very-very-very-long-example.com")); // long domain name
         assertTrue(Email.isValidEmail("if.you.dream.it_you.can.do.it@example.com")); // long local part
@@ -68,10 +68,10 @@ public class EmailTest {
 
     @Test
     public void equals() {
-        Email email = new Email("valid@email");
+        Email email = new Email("valid@email.com");
 
         // same values -> returns true
-        assertTrue(email.equals(new Email("valid@email")));
+        assertTrue(email.equals(new Email("valid@email.com")));
 
         // same object -> returns true
         assertTrue(email.equals(email));
@@ -83,6 +83,6 @@ public class EmailTest {
         assertFalse(email.equals(5.0f));
 
         // different values -> returns false
-        assertFalse(email.equals(new Email("other.valid@email")));
+        assertFalse(email.equals(new Email("other.valid@email.com")));
     }
 }

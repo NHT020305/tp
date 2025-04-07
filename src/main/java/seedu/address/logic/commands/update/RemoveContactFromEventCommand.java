@@ -25,6 +25,8 @@ public class RemoveContactFromEventCommand extends EditEventCommand {
             + "Parameters: INDEX "
             + PREFIX_EVENT_LINKED_CONTACT_LONG + "[CONTACT_INDEX/INDICES]\n"
             + "INDEX must be a positive integer.\n"
+            + "CONTACT_INDEX is based on the list of contacts associated with the event."
+            + "Use `event info INDEX` to view the list of associated contacts.\n"
             + "CONTACT_INDEX is based on the list displayed by the event info command.\n"
             + "Example: " + EVENT_COMMAND_WORD + " " + COMMAND_WORD + " 1 "
             + PREFIX_EVENT_LINKED_CONTACT_LONG + "1 3 4";

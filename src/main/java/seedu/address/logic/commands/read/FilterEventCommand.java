@@ -32,8 +32,9 @@ import seedu.address.ui.ListPanelViewType;
 public class FilterEventCommand extends FilterCommand<EventManagerAndList, Event> {
 
     public static final String MESSAGE_USAGE = EVENT_COMMAND_WORD + " " + COMMAND_WORD
-            + ": Filters events based on specified criteria.\n"
-            + "Parameters: --<COL> [<OP>:] <VALUE(S)> [...]\n"
+            + ": Filters events that fulfill all of the specified criteria. Specify at least one criterion.\n"
+            + "Each criterion is formed using a column, operator, and values, in the form --<COL> [<OP>:] <VALUE(S)>\n"
+
             + "- --<COL> : Column to filter on ("
             + PREFIX_EVENT_NAME_LONG + ", "
             + PREFIX_EVENT_START_LONG + ", "
@@ -62,20 +63,20 @@ public class FilterEventCommand extends FilterCommand<EventManagerAndList, Event
             + "Examples:\n"
             + "1. " + EVENT_COMMAND_WORD + " " + COMMAND_WORD + " "
             + PREFIX_EVENT_NAME_LONG + Operator.OR.getName() + ": Exam PRESENTATION\n"
-            + "   Find todos whose name contains at least one of the keywords \"exam\" or \"presentation.\"\n"
+            + "   Find events whose name contains at least one of the keywords \"exam\" or \"presentation.\"\n"
 
             + "2. " + EVENT_COMMAND_WORD + " " + COMMAND_WORD + " "
             + PREFIX_EVENT_NAME_LONG + "CS1010S eXAM "
             + PREFIX_EVENT_START_LONG + Operator.OR.getName()
             + ": [25-03-13 23:59/25-03-20 23:59] [25-03-27 23:59/-]\n"
-            + "   Find todos whose name contains both the keywords \"CS1010S\" and \"exam\" and whose start time is "
+            + "   Find events whose name contains both the keywords \"CS1010S\" and \"exam\" and whose start time is "
             + "between 25-03-13 23:59 and 25-03-20 23:59 (inclusive) or after 25-03-27 23:59 (inclusive).\n"
 
             + "3. " + EVENT_COMMAND_WORD + " " + COMMAND_WORD + " "
             + PREFIX_EVENT_LOCATION_LONG + Operator.NAND.getName() + ": NUS Home "
             + PREFIX_EVENT_LINKED_CONTACT_LONG + "1 2 3\n"
-            + "   Find todos whose location does not contain the keywords \"NUS\" or \"home\" and which are is linked"
-            + " to the people currently at index 1, 2 and 3.\n";
+            + "   Find events whose location does not contain keywords \"NUS\" and \"home\", and which are is linked"
+            + " to the contacts currently at index 1, 2 and 3.\n";
 
     private final EventPredicate eventPredicate;
     private final Optional<Pair<Operator, List<Index>>> contactFilterOpt;

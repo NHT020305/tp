@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.parser.Prefix;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.event.Event;
@@ -17,7 +18,8 @@ import seedu.address.model.todo.Todo;
  */
 public class Messages {
 
-    public static final String MESSAGE_UNKNOWN_COMMAND = "Unknown command";
+    public static final String MESSAGE_UNKNOWN_COMMAND = "Unknown command. Type " + HelpCommand.COMMAND_WORD
+            + " to see available commands.";
     public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format! \n%1$s";
     public static final String MESSAGE_INVALID_ARGUMENTS = "Arguments missing or invalid! \n%1$s";
     public static final String MESSAGE_SEARCH_OVERVIEW = "Number of results: %1$d";

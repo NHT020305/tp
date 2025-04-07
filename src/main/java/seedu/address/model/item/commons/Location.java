@@ -9,8 +9,8 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Location {
     public static final String MESSAGE_CONSTRAINTS =
-            "Locations must consist of words not starting with a hyphen and separated by spaces, "
-                    + "and it should not be blank";
+            "Invalid location supplied. Locations must consist of words not starting with a hyphen and separated by "
+                    + "spaces, and it must not be blank";
     // Ensures string is not empty AND does not start with whitespace
     public static final String VALIDATION_REGEX = "^(?!\\s)(?!-)\\S+(?:\\s+(?!-)\\S+)*$";
     public final String value;
@@ -44,6 +44,11 @@ public class Location {
         if (!(other instanceof Location otherLocation)) {
             return false;
         }
-        return this.value.equals(otherLocation.value);
+        return this.value.toLowerCase().equals(otherLocation.value.toLowerCase());
+    }
+
+    @Override
+    public int hashCode() {
+        return value.toLowerCase().hashCode();
     }
 }

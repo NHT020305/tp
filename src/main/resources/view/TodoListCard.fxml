@@ -8,28 +8,44 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
 <HBox id="cardPane" fx:id="cardPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10" prefWidth="150" />
         </columnConstraints>
-        <VBox alignment="CENTER_LEFT" minHeight="55" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS">
+        <VBox alignment="CENTER_LEFT" minHeight="70" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="15" />
+                <Insets top="12" right="12" bottom="12" left="16" />
             </padding>
-            <HBox spacing="0.5" alignment="CENTER_LEFT">
+            <HBox spacing="4" alignment="CENTER_LEFT">
                 <Label fx:id="id" styleClass="cell_big_label">
                     <minWidth>
                         <Region fx:constant="USE_PREF_SIZE" />
                     </minWidth>
                 </Label>
                 <Label fx:id="name" text="\$first" styleClass="cell_big_label" wrapText="true" maxWidth="450" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="todoStatus" styleClass="status-indicator" text="\$todoStatus" wrapText="true" />
             </HBox>
-            <FlowPane fx:id="tags" prefWrapLength="450" />
-            <FlowPane fx:id="contacts" prefWrapLength="450" />
-            <Label fx:id="todoStatus" styleClass="cell_small_label" text="\$todoStatus" wrapText="true" maxWidth="450" />
-            <Label fx:id="deadline" styleClass="cell_small_label" text="\$deadline" wrapText="true" maxWidth="450" />
-            <Label fx:id="todoLocation" styleClass="cell_small_label" text="\$todoLocation" wrapText="true" maxWidth="450" />
+            <FlowPane fx:id="tags" styleClass="tags-container" prefWrapLength="450">
+                <padding>
+                    <Insets top="5" bottom="5" />
+                </padding>
+            </FlowPane>
+            <FlowPane fx:id="contacts" styleClass="contacts-container" prefWrapLength="450">
+                <padding>
+                    <Insets top="5" bottom="5" />
+                </padding>
+            </FlowPane>
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <ImageView fitHeight="16" fitWidth="16" preserveRatio="true" styleClass="icon" />
+                <Label fx:id="deadline" styleClass="cell_small_label" text="\$deadline" wrapText="true" maxWidth="450" />
+            </HBox>
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <ImageView fitHeight="16" fitWidth="16" preserveRatio="true" styleClass="icon" />
+                <Label fx:id="todoLocation" styleClass="cell_small_label" text="\$todoLocation" wrapText="true" maxWidth="450" />
+            </HBox>
         </VBox>
     </GridPane>
 </HBox>

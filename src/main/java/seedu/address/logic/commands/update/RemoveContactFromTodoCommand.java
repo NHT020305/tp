@@ -28,7 +28,8 @@ public class RemoveContactFromTodoCommand extends EditTodoCommand {
             + "Parameters: INDEX "
             + PREFIX_TODO_LINKED_CONTACT_LONG + "[CONTACT_INDEX/INDICES]\n"
             + "INDEX must be a positive integer.\n"
-            + "CONTACT_INDEX is based on the list displayed by the todo info command.\n"
+            + "CONTACT_INDEX is based on the list of contacts associated with the todo."
+            + "Use `todo info INDEX` to view the list of associated contacts.\n"
             + "Example: " + TODO_COMMAND_WORD + " " + COMMAND_WORD + " 1 "
             + PREFIX_TODO_LINKED_CONTACT_LONG + "1 3 4";
     public static final String MESSAGE_REMOVE_CONTACT_SUCCESS = "Removed contacts from todo: %1$s";

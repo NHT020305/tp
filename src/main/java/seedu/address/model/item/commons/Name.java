@@ -10,8 +10,8 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Name implements Comparable<Name> {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Names must consist of words not starting with a hyphen and separated by spaces, "
-                    + "and it should not be blank";
+            "Invalid name supplied. Names must consist of words not starting with a hyphen and separated by spaces, "
+                    + "and it must not be blank";
     // Ensures string is not empty AND does not start with whitespace
     public static final String VALIDATION_REGEX = "^(?!\\s)(?!-)\\S+(?:\\s+(?!-)\\S+)*$";
 
@@ -52,12 +52,12 @@ public class Name implements Comparable<Name> {
             return false;
         }
 
-        return value.equals(otherName.value);
+        return value.toLowerCase().equals(otherName.value.toLowerCase());
     }
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return value.toLowerCase().hashCode();
     }
 
     @Override
