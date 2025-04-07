@@ -197,7 +197,6 @@ Supported `event` columns:
 * `--location`.
 * `--tag`
 * `--contact`.
-* `[<INTERVAL_START>/<INTERVAL_END>]`.
 
 Supported `todo` columns:
 * `--name`.
@@ -380,12 +379,16 @@ Example:
 |Parameter|Constraint|item/command|Example|
 |:---|:---|:---|:--|
 |`--name`|Can contain multiple words having special characters, but the words cannot start with `-`. Must not be blank.|`contact`, `event`, `todo`|+ `--name David Li `<br>- `--name -Alvin`|
-| `--email`  | Must follow `local-part@domain` format.<br><br>**Local part:**<br>- Alphanumeric + allowed: `+`, `_`, `.`, `-`<br>- Cannot start/end with special characters<br><br>**Domain:**<br>- Labels separated by `.`<br>- Ends with label ≥ 2 chars<br>- Each label starts/ends with alphanumeric<br>- Hyphens allowed *within* labels only |`contact`|+ `user.name+filter@example-domain.com`<br>- `-username@domain.com`<br>- `user@.com`|
-|`--id`||||
-|`--course`||||
-|`--group`||||
-|`--tag`||||
-|`--name`||||
+| `--email`  | Must follow `local-part@domain` format.<br><br>**Local part:**<br>- Alphanumeric + allowed: `+`, `_`, `.`, `-`<br>- Cannot start/end with special characters<br><br>**Domain:**<br>- Labels separated by `.`<br>- Ends with label ≥ 2 chars<br>- Each label starts/ends with alphanumeric<br>- Hyphens allowed *within* labels only |`contact`|+ `--email user.name+filter@example-domain.com`<br>- `--email -username@domain.com`<br>- `--email user@.com`|
+|`--id`|Can contain multiple words having special characters, but the words cannot start with `-`. Must not be blank.|`contact`|+ `--id id`<br> - `--id -id`|
+|`--course`|Can contain multiple words having special characters, but the words cannot start with `-`. Must not be blank.|`contact`|+ `--course course`<BR> - `--course -course`|
+|`--group`|Can contain multiple words having special characters, but the words cannot start with `-`. Must not be blank.|`contact`|+ `--group T01 01`<BR> - `--group -group`|
+|`--tag`|A word that cannot start with `-`. Must not be blank|`contact`, `event`, `todo`|+ `--tag tag`<BR>- `--tag -tag`<BR>- `--tag tag t` (tags `t` and `tag` will be added)|
+|`--name`|Can contain multiple words having special characters, but the words cannot start with `-`. Must not be blank.|`contact`, `event`, `todo`|+ `--name name n`<BR>- `--name -name`|
+|`--start`|`yy-mm-dd hh:mm`, `hh` is of 24 hours format.|`event`|+ `--start 24-08-26 12:00` <BR> - `--start 24/08/26 1400`|
+|`--end`|`yy-mm-dd hh:mm`, `hh` is of 24 hours format.|`event`|+ `--end 24-08-26 12:00` <BR> - `--end 24/08/26 1400`|
+|`--deadline`|`yy-mm-dd hh:mm`, `hh` is of 24 hours format.|`todo`|+ `--deadline 24-08-26 12:00` <BR> - `--deadline 24/08/26 1400`|
+|`--contact`|Positive integer, from 1 to the size of the `contact` list.|`event`, `todo`|+ `--contact 1` <BR> - `--contact abc`|
 
 ## Miscellaneous
 
