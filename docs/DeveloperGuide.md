@@ -237,7 +237,7 @@ This section describes some noteworthy details on how certain features are imple
 
 The command execution feature is a core component of the application that processes user inputs and executes the corresponding commands. The sequence diagram below illustrates the execution flow when a user enters a command:
 
-<puml src="diagrams/XYCommandSequenceDiagram.puml" width="450" />
+<puml src="diagrams/XYCommandSequenceDiagram.puml" width="2000" />
 
 The command execution process involves several key steps:
 

@@ -1,4 +1,5 @@
 @startuml
+allowmixing
 !include style.puml
 skinparam arrowThickness 1.1
 skinparam arrowColor LOGIC_COLOR_T4
@@ -26,7 +27,7 @@ Class "EventStorage" as EventStorage STORAGE_COLOR_T2
 Class "UserPrefsStorage" as UserPrefsStorage STORAGE_COLOR_T2
 }
 
-Class HiddenOutside #FFFFFF
+Cloud HiddenOutside #FFFFFF
 HiddenOutside ..> Logic
 
 LogicManager .up.|> Logic
