@@ -89,6 +89,8 @@ The constraints of the different flags are defined clearer at the end of all the
 * `event`: To keep track of tasks that have a set duration at a location.
 * `todo`: To keep track of tasks that have a deadline.
 
+**Important**: Uniqueness for `contact` is defined as having different `ID`. Uniqueness for `event` and `todo` is defined to have different `name`
+
 ### Adding an `item`: `add`
 An `item` is added to the application.
 
@@ -106,8 +108,6 @@ An `item` is added to the application.
   * Example: `todo add --name Final Submission --deadline 24-08-26 12:00 --location NUS SoC COM1 --tag CS1234`
 
 **Pro-tip**: The various `items` will be added to their respective lists. `contact` will be added to the contact list on the right side, `event` and `todo` will be added to the list on the bottom left side to their respective list.
-
-**Important**: Uniqueness for `contact` is defined as having different `ID`. Uniqueness for `event` and `todo` is defined to have different `name`
 
 ### Editing an `item`: `edit`
 Edits the details of the `item` identified by the index number in the currently displayed on their respective item list. Only the fields specified in the command will be updated; all others remain unchanged.
@@ -135,7 +135,7 @@ Deletes an item from its corresponding list. Removing it from *existence*.
 
 **Format & Examples**
 * `item`
-  * Format: `item delete item_INDEX`
+  * Format: `item delete ITEM_INDEX`
   * Example: 
     * `contact delete 1`
     * `event delete 2`
@@ -183,7 +183,7 @@ Clears the entire list of the chosen `item` list.
 ### Filtering an `item`: `filter`
 Filters the list of `item` based on one or more criteria. You can search by each `item`'s specified `--column` or linked contacts using logical operators to combine multiple values.
 
-Format: `item filter --COLUMN OPERATOR: VALUE(S) [...]`
+Format: `item filter --COLUMN [OPERATOR:] VALUE(S) [...]`
 
 Supported `contact` columns
 * `--name`. Filter by `contact` name.
@@ -218,6 +218,10 @@ Supported `todo` columns:
 **Pro-tip**: Please refer to the table of constraints for a more concrete definition of the flags being used in `filter`.
 
 If an operator is not provided, it defaults to `and`. If an unrecognized operator is provided, it will be treated as a value. If multiple valid operators are provided, the first one will be applied and the rest will be treated as values.
+
+`filter` finds all contacts which fulfil all the specified criteria. Specify at least one criterion. Operators can only be placed within a specific column.
+
+`--tag`: A keyword matching an `item`'s tags means the keyword is contained in at least one of the `item`'s tags.
 
 Provide one or more keywords separated by spaces.
 Keywords are case-insensitive and support partial matches.
