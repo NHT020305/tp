@@ -35,7 +35,7 @@ Given below is a quick overview of main components and how they interact with ea
 
 **Main components of the architecture**
 
-**`Main`** (consisting of classes [`Main`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
+**`Main`** (consisting of classes [`Main`](https://github.com/AY2425S2-CS2103-F08-4/tp/blob/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/AY2425S2-CS2103-F08-4/tp/blob/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence, and connects them up with each other.
 * At shut down, it shuts down the other components and invokes cleanup methods where necessary.
 
@@ -48,27 +48,43 @@ The bulk of the app's work is done by the following four components:
 
 [**`Commons`**](#common-classes) represents a collection of classes used by multiple other components.
 
+**Note:** When describing classes by `XYClass`, `Y` refers broadly to contact/event/todo and `X` refers to the action the command should perform. 
+
 **How the architecture components interact with each other**
 
-The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
+The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `contact delete 1`.
 
 <puml src="diagrams/ArchitectureSequenceDiagram.puml" width="574" />
 
 Each of the four main components (also shown in the diagram above),
 
 * defines its *API* in an `interface` with the same name as the Component.
-* implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point.
+* implements its functionality using a concrete `YManager` class which follows the corresponding API `interface` mentioned in the previous point.
 
-For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
+For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside components from being coupled to the implementation of a component), as illustrated in the class diagram below.
 
-<puml src="diagrams/ComponentManagers.puml" width="300" />
+<puml src="diagrams/ComponentManagers.puml" width="600" />
+
+As shown in the diagram, TutorConnect's component managers are organized as follows:
+
+* **Logic Component**: Defines the `LogicManager` which serves as the central coordinator for executing commands.
+* **Model Component**: Implements the `ModelManager` which manages three specialized data managers:
+    * `ContactManagerAndList`: Manages the contacts (students, tutors) in the system
+    * `TodoManagerAndList`: Handles todo items and tasks
+    * `EventManagerAndList`: Manages scheduled events and appointments
+* **Storage Component**: Uses the `StorageManager` to coordinate storage operations across specialized storage handlers:
+    * `ContactStorage`: Persists contact data
+    * `TodoStorage`: Stores todo information
+    * `EventStorage`: Manages event data
+    * `UserPrefsStorage`: Handles user preferences
+
+The `LogicManager` interacts with the Model component to execute commands on the various data managers, and with the Storage component to persist any changes to the appropriate storage locations.
 
 The sections below give more details of each component.
 
 ### UI component
 
-The **API** of this component is specified in [
-`Ui.java`](https://github.com/AY2425S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/ui/Ui.java)
+The **API** of this component is specified in [`Ui.java`](https://github.com/AY2425S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/ui/Ui.java)
 
 <puml src="diagrams/UiClassDiagram.puml" alt="Structure of the UI Component"/>
 
@@ -86,7 +102,7 @@ The UI employs a flexible design pattern through several key components:
 
 1. **Card System**: The UI uses a card-based display system:
     - The `Card<T>` interface defines how entity information is displayed
-    - `XCard` classes (like EventCard) implement this interface and extend `UiPart<Region>`
+    - `YCard` classes (like `EventCard`) implement this interface and extend `UiPart<Region>`
     - The `CardFactory<T>` interface and its implementation `GenericCardFactory<T>` are responsible for creating
       appropriate cards for different entity types
 
@@ -106,7 +122,7 @@ changes.
 
 These relationships form a clear separation of concerns:
 
-- `XCard` references model entity `X` directly to display its properties
+- `YCard` references model entity `Y` directly to display its properties
 - `DisplayableListViewCell` renders any `DisplayableItem` in a type-safe manner
 - `Card` interface provides a consistent way to get the underlying `UiPart`
 - `ItemAdapter` uses a `CardFactory` to create appropriate cards
@@ -123,29 +139,29 @@ The `UI` component:
 
 ### Logic component
 
-**API** : [`Logic.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/logic/Logic.java)
+**API** : [`Logic.java`](https://github.com/AY2425S2-CS2103-F08-4/tp/blob/master/src/main/java/seedu/address/logic/Logic.java)
 
 Here's a (partial) class diagram of the `Logic` component:
 
 <puml src="diagrams/LogicClassDiagram.puml" width="550"/>
 
-The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("contact delete 
+The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("contact delete
 1")` API call as an example.
 
-<puml src="diagrams/DeleteSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete 1` Command" />
+<puml src="diagrams/DeleteSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `contact delete 1` Command" />
 
 <box type="info" seamless>
 
-**Note:** The lifeline for `ContactCommandParser`, `DeleteContactCommandParser`), should end at 
+**Note:** The lifeline for `ContactCommandParser`, `DeleteContactCommandParser`), should end at
 the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </box>
 
 How the `Logic` component works:
 
-1. When `Logic` is called upon to execute a command, it is passed to an `ParserImpl` object which in turn cascades 
-   through the parser hierarchy (item -> operation) to find a parser that matches the command (e.g., 
+1. When `Logic` is called upon to execute a command, it is passed to an `ParserImpl` object which in turn cascades
+   through the parser hierarchy (item -> operation) to find a parser that matches the command (e.g.,
    `DeleteContactCommandParser`) and uses it to parse the command.
-1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g. 
+1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g.
    `DeleteContactCommand`) which is executed by the `LogicManager`.
 1. The command can communicate with the `Model` when it is executed (e.g. to delete a contact).<br>
    Note that although this is shown as a single step in the diagram above (for simplicity), in the code it can take several interactions (between the command object and the `Model`) to achieve.
@@ -156,15 +172,15 @@ Here are the other classes in `Logic` (omitted from the class diagram above) tha
 <puml src="diagrams/ParserClasses.puml" width="600"/>
 
 How the parsing works:
-* When called upon to parse a user command, the `ParserImpl` class creates an `XYZCommandParser` (`XYZ` is a 
-  placeholder for the specific command and item name e.g., `AddContactCommandParser`) which uses the other classes 
-  shown above to parse the user command and create a `XYZCommand` object (e.g., `AddContactCommand`) which the 
+* When called upon to parse a user command, the `ParserImpl` class creates an `XYCommandParser` (`XY` is a
+  placeholder for the specific command and item name e.g., `AddContactCommandParser` as mentioned above) which uses the other classes
+  shown above to parse the user command and create a `XYCommand` object (e.g., `AddContactCommand`) which the
   `ParserImpl` returns back as a `Command` object.
-* All `XYZCommandParser` classes (e.g., `AddContactCommandParser`, `DeleteContactCommandParser`, ...) inherit from the 
+* All `XYCommandParser` classes (e.g., `AddContactCommandParser`, `DeleteContactCommandParser`, ...) inherit from the
   `Parser` interface so that they can be treated similarly where possible e.g, during testing.
 
 ### Model component
-**API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
+**API** : [`Model.java`](https://github.com/AY2425S2-CS2103-F08-4/tp/blob/master/src/main/java/seedu/address/model/Model.java)
 
 
 The `Model` component,
@@ -196,7 +212,7 @@ The diagram below shows different relationship between different `Item`s managed
 
 ### Storage component
 
-**API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
+**API** : [`Storage.java`](https://github.com/AY2425S2-CS2103-F08-4/tp/blob/master/src/main/java/seedu/address/storage/Storage.java)
 
 <puml src="diagrams/StorageClassDiagram.puml" width="550" />
 
@@ -215,46 +231,133 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### \[Implemented\] New command execution feature
+
+#### Implementation
+
+The command execution feature is a core component of the application that processes user inputs and executes the corresponding commands. The sequence diagram below illustrates the execution flow when a user enters a command:
+
+<puml src="diagrams/XYCommandSequenceDiagram.puml" width="450" />
+
+The command execution process involves several key steps:
+
+1. The process begins when the user enters a command through the UI
+2. `MainWindow` forwards the command text to `LogicManager` for execution
+3. `LogicManager` passes the command to `ParserImpl` for parsing
+4. `ParserImpl` identifies the command type (in this case, a `Y` command with `X` subcommand)
+5. The command is then forwarded to the appropriate command parser (`XYCommandParser`)
+6. `XYCommandParser` uses the `ArgumentTokenizer` to tokenize the input and extract arguments
+7. Arguments are validated and converted to the appropriate types using `ParserUtil`
+8. An `XYCommand` object is created with the parsed arguments and returned to `LogicManager`
+9. `LogicManager` executes the command, which typically involves updating the model (e.g., filtering items)
+10. After execution, the model changes are saved to storage and a `CommandResult` is returned to `MainWindow`
+
+This architecture follows the Command pattern, allowing for extendable command functionality while maintaining a clean separation between the UI and the application logic.
+
+#### Design considerations:
+
+* **Alternative 1 (current choice):** Use a centralized command execution flow with specialized parsers.
+    * Pros:
+        * Clear separation of concerns with dedicated parser for each command type
+        * Easily extensible for new commands
+        * Consistent command execution pattern
+        * Strong encapsulation of command execution logic
+    * Cons:
+        * Slightly more complex class structure
+        * Additional overhead for simple commands
+
+* **Alternative 2:** Process commands directly in the logic component without specialized parsers.
+    * Pros:
+        * Simpler implementation for basic commands
+        * Fewer objects created during command execution
+    * Cons:
+        * Less maintainable as the application grows
+        * Harder to extend with new commands
+        * Potential duplication of parsing logic
+        * Reduced testability of individual components
+
+### \[Implemented\] GUI `Y` card click action alias to `Y info <idx>`
+
+#### Implementation
+
+When a user clicks on a card in the UI, the application automatically executes a `Y info <index>` command
+to display detailed information about the selected contact. The sequence diagram below illustrates this process:
+
+<puml src="diagrams/AliasXInfoSequenceDiagram.puml" width="450" />
+
+The process begins when a user clicks on a `YCard` in the UI:
+
+1. The `YCard` has a click handler that was set up when the card was created
+2. When clicked, this handler is executed and passed to the `ListPanel` that contains the card
+3. The `ListPanel` forwards the index of the clicked card to `MainWindow` through the `onItemClickHandler` consumer
+4. `MainWindow` processes this by generating a command string in the format `Y info <index>`
+5. This command string is passed to `LogicManager` for execution, which processes it through the command execution
+   pipeline
+6. After execution, the `CommandResult` is returned to `MainWindow`
+7. `MainWindow` updates the `ResultDisplay` to show feedback to the user
+
+This implementation allows users to quickly access detailed contact information with a single click rather than having
+to manually type the `Y info <index>` command.
+
+#### Design considerations:
+
+* **Alternative 1 (current choice):** Translate UI interactions into command strings.
+    * Pros:
+        * Maintains a single execution pathway for commands regardless of how they're initiated
+        * Each UI interaction can be modeled as a specific command
+        * Simplifies testing as UI interactions and command-line inputs use the same logic paths
+    * Cons:
+        * Adds overhead of command string creation and parsing for simple UI interactions
+
+* **Alternative 2:** Create a separate pathway for UI-triggered events.
+    * Pros:
+        * Potentially more efficient for simple actions
+        * Can be optimized for specific UI interactions
+    * Cons:
+        * Creates duplicate logic paths for the same functionality
+        * More difficult to maintain consistency between command-line and UI-triggered actions
+        * Increases complexity of testing
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
 
-The proposed undo/redo mechanism is facilitated by `VersionedAddressBook`. It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`. Additionally, it implements the following operations:
+The proposed undo/redo mechanism is facilitated by `VersionedTutorConnect`. It extends `TutorConnect` with an undo/redo history, stored internally as an `TutorConnectStateList` and `currentStatePointer`. Additionally, it implements the following operations:
 
-* `VersionedAddressBook#commit()` — Saves the current address book state in its history.
-* `VersionedAddressBook#undo()` — Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()` — Restores a previously undone address book state from its history.
+* `VersionedTutorConnect#commit()` — Saves the current TutorConnect state in its history.
+* `VersionedTutorConnect#undo()` — Restores the previous TutorConnect state from its history.
+* `VersionedTutorConnect#redo()` — Restores a previously undone TutorConnect state from its history.
 
-These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
+These operations are exposed in the `Model` interface as `Model#commitTutorConnect()`, `Model#undoTutorConnect()` and `Model#redoTutorConnect()` respectively.
 
 Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
 
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
+Step 1. The user launches the application for the first time. The `VersionedTutorConnect` will be initialized with the initial TutorConnect state, and the `currentStatePointer` pointing to that single TutorConnect state.
 
 <puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
 
-Step 2. The user executes `delete 5` command to delete the 5th contact in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
+Step 2. The user executes `contact delete 5` command to delete the 5th contact in TutorConnect. The `contact delete` command calls `Model#commitTutorConnect()`, causing the modified state of TutorConnect after the `contact delete 5` command executes to be saved in the `TutorConnectStateList`, and the `currentStatePointer` is shifted to the newly inserted TutorConnect state.
 
 <puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
 
-Step 3. The user executes `add n/David …​` to add a new contact. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
+Step 3. The user executes `contact add --name David …​` to add a new contact. The `contact add` command also calls `Model#commitTutorConnect()`, causing another modified TutorConnect state to be saved into the `TutorConnectStateList`.
 
 <puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
 
 <box type="info" seamless>
 
-**Note:** If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
+**Note:** If a command fails its execution, it will not call `Model#commitTutorConnect()`, so TutorConnect state will not be saved into the `TutorConnectStateList`.
 
 </box>
 
-Step 4. The user now decides that adding the contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
+Step 4. The user now decides that adding the contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoTutorConnect()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous TutorConnect state, and restores TutorConnect to that state.
 
 <puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
 
 
 <box type="info" seamless>
 
-**Note:** If the `currentStatePointer` is at index 0, pointing to the initial AddressBook state, then there are no previous AddressBook states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather
+**Note:** If the `currentStatePointer` is at index 0, pointing to the initial TutorConnect state, then there are no previous TutorConnect states to restore. The `undo` command uses `Model#canUndoTutorConnect()` to check if this is the case. If so, it will return an error to the user rather
 than attempting to perform the undo.
 
 </box>
@@ -273,19 +376,19 @@ Similarly, how an undo operation goes through the `Model` component is shown bel
 
 <puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="UndoSequenceDiagram-Model" />
 
-The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
+The `redo` command does the opposite — it calls `Model#redoTutorConnect()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores TutorConnect to that state.
 
 <box type="info" seamless>
 
-**Note:** If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone AddressBook states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
+**Note:** If the `currentStatePointer` is at index `TutorConnectStateList.size() - 1`, pointing to the latest TutorConnect state, then there are no undone TutorConnect states to restore. The `redo` command uses `Model#canRedoTutorConnect()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
 
 </box>
 
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
+Step 5. The user then decides to execute the command `contact list`. Commands that do not modify TutorConnect, such as `contact list`, will usually not call `Model#commitTutorConnect()`, `Model#undoTutorConnect()` or `Model#redoTutorConnect()`. Thus, the `TutorConnectStateList` remains unchanged.
 
 <puml src="diagrams/UndoRedoState4.puml" alt="UndoRedoState4" />
 
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
+Step 6. The user executes `contact clear`, which calls `Model#commitTutorConnect()`. Since the `currentStatePointer` is not pointing at the end of the `TutorConnectStateList`, all TutorConnect states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `contact add --name David …​` command. This is the behavior that most modern desktop applications follow.
 
 <puml src="diagrams/UndoRedoState5.puml" alt="UndoRedoState5" />
 
@@ -297,21 +400,121 @@ The following activity diagram summarizes what happens when a user executes a ne
 
 **Aspect: How undo & redo executes:**
 
-* **Alternative 1 (current choice):** Saves the entire address book.
-  * Pros: Easy to implement.
-  * Cons: May have performance issues in terms of memory usage.
+* **Alternative 1 (current choice):** Saves the entire TutorConnect.
+    * Pros: Easy to implement.
+    * Cons: May have performance issues in terms of memory usage.
 
 * **Alternative 2:** Individual command knows how to undo/redo by
   itself.
-  * Pros: Will use less memory (e.g. for `delete`, just save the contact being deleted).
-  * Cons: We must ensure that the implementation of each individual command are correct.
+    * Pros: Will use less memory (e.g. for `delete`, just save the contact being deleted).
+    * Cons: We must ensure that the implementation of each individual command are correct.
 
-_{more aspects and alternatives to be added}_
+### \[Implemented\] Command History Navigation
 
-### \[Proposed\] Data archiving
+#### Implementation
 
-_{Explain here how the data archiving feature will be implemented}_
+The application supports command history navigation, allowing users to quickly recall and reuse previously entered commands. This feature is implemented in the `CommandBox` component, which is responsible for capturing and processing user command inputs.
 
+The command history is stored as a list of strings, with a pointer (index) that keeps track of the current position when navigating through the history. The sequence diagram below illustrates how command history navigation works:
+
+<puml src="diagrams/CommandHistorySequenceDiagram.puml" width="250" />
+
+The command history navigation flow follows these steps:
+
+1. When a user presses the Up or Down arrow key in the command text field, the `handleKeyPress` method in `CommandBox` captures this event
+2. For Up arrow key presses, the `displayPreviousCommand` method is called, which:
+    - Decrements the current command index if it's not already at the beginning of the history
+    - Retrieves the command at the new index
+    - Updates the command text field to display this command
+3. For Down arrow key presses, the `displayNextCommand` method is called, which:
+    - Increments the current command index if it's not already at the end of the history
+    - If at the end of history, clears the command text field
+    - Otherwise, displays the command at the new index
+
+The state diagram below captures the possible states and transitions during command history navigation:
+
+<puml src="diagrams/CommandHistoryStateDiagram.puml" width="250" />
+
+When a new command is entered, it's added to the history list, and the index is reset to point to the end of the list. This ensures that pressing the Up arrow immediately after entering a command will display the most recently entered command.
+
+#### Design considerations:
+
+* **Alternative 1 (current choice):** Store complete command history for the session.
+    * Pros:
+        * Users can access all commands they've entered during the session
+        * Simple implementation with a list and index pointer
+        * Familiar behavior matching most command-line interfaces
+    * Cons:
+        * Memory usage increases with session length
+        * No persistence between application sessions
+
+* **Alternative 2:** Limit history to a fixed number of most recent commands.
+    * Pros:
+        * Bounded memory usage
+        * More efficient navigation through a smaller set of commands
+    * Cons:
+        * Limited access to older commands
+        * Additional complexity to maintain the limited history
+
+* **Alternative 3:** Add persistence for command history between sessions.
+    * Pros:
+        * Commands available across application restarts
+        * Enhanced user experience for recurring tasks
+    * Cons:
+        * Additional complexity for storage and retrieval
+        * Potential privacy concerns for sensitive commands
+
+### \[Implemented\] Command Parser with flags
+The proposed parsing mechanism for `Command` containing flags is facilitated by specialized `XYCommandParser` classes. These parsers interpret user input and construct the appropriate `XYCommand` objects. The parsing process relies on several utility components:
+
+Where `X` refers to the classes with the `item` interface. `Y` refers to the new feature related to the class `X`.
+
+* `ArgumentTokenizer` – splits the raw input into prefixes and arguments.
+
+* `ArgumentMultimap` – maps each prefix to its respective value(s).
+
+The following sequence diagram shows how an edit operation goes through the Logic component:
+
+<puml src="diagrams/XYCommandSequenceDiagram.puml" width="250" />
+
+Step 1. The `args` for `XYCommand` gets passed into the corresponding `XYCommandParser`.
+
+Step 2: The `ArgumentTokenizer` scans the raw input string and splits it based on the defined prefixes (e.g., `--tag` for tags, `--name` for names).
+
+Each prefix and its value(s) are stored in an `ArgumentMultimap`. Internally, the following methods are used:
+
+* `ArgumentTokenizer#findAllPrefixPositions()`: Collects all positions of the supplied prefixes in the `argsString`.
+* `ArgumentTokenizer#findPrefixPositions()`: Iteratively searches the string for instances of a specific prefix (e.g., `--tag`, `--name`).
+* `ArgumentMultimap#extractArguments()`: Once all prefix positions are gathered, `extractArguments()` slices up the original string based on the positions and maps each prefix to its corresponding value(s). The final result is stored in an `ArgumentMultimap`.
+
+Step 3: After tokenization, the `ArgumentMultimap` contains all parsed arguments grouped by their corresponding prefixes.
+
+This step involves:
+
+Checking for required arguments:
+Certain prefixes (e.g., `PREFIX_NAME`) may be mandatory. If missing, a `ParseException` is thrown.
+
+Converting strings into domain-specific objects:
+
+* `ParserUtil.parseName(...)` for `names`
+
+* `ParserUtil.parseTags(...)` for `tags`
+
+* `ParserUtil.parseIndex(...)` for `indices`
+
+These utility methods ensure type safety and can be defined as you needed. If any value fails to conform to the expected format (e.g., an invalid index or empty tag), a `ParseException` is raised with an appropriate error message.
+
+Step 4: Once all necessary values are extracted and validated, the final command is constructed:
+
+At this stage, the parser assembles the required information into an executable `XYCommand` object, which is returned to the `LogicManager`.
+
+Design Considerations
+* Modularity: Each command has its own parser class, keeping logic isolated and maintainable.
+
+* Reusability: Shared utility classes like `ArgumentTokenizer`, `ArgumentMultimap`, and `ParserUtil` ensure consistency across parsers.
+
+* Scalability: Easily supports optional, repeatable, and order-independent arguments through prefix-based parsing. These prefixes 
+are called and parsed by `ArgumentTokenizer` as required.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -332,9 +535,9 @@ _{Explain here how the data archiving feature will be implemented}_
 **Target user profile**:
 
 * Tutors managing student information and course-related details
-  * Needs to track student attendance and student issues
-  * Needs to manage course related tasks
-* Has a need to manage a significant number of contacts
+  * Needs to manage course tasks related to a student or tutor.
+  * Needs to track student attendance of classes.
+* Needs to manage a significant number of contacts
 * Prefers desktop apps over other types
 * Can type fast
 * Prefers typing to mouse interactions
@@ -342,52 +545,51 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Value proposition**: Tutors often teach multiple courses across different platforms. Without being a full-fledged learning management system, TutorConnect simplifies student management by providing an efficient central platform for storing and organizing student contacts, assigning tasks, and optimizing workflows with intuitive CLI options.
 
-
 ### User stories
+
+Note: Not all features are implemented. The [user guide](UserGuide.md) documents the current set of supported features. This is a work in progress.
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a ...                 | I want to ...                                  | so that I can ...                                   |
-|----------|--------------------------|------------------------------------------------|-----------------------------------------------------|
-| `* * *`  | first time user          | see a functional help page                     | understand the app's functionalities                |
-| `*`      | first-time user          | get a guide to creating my profile             | know what to do and not feel overwhelmed            |
-| `* * *`  | tutor                    | automatically load in data                     | easily reuse the application                        |
-| `* * *`  | tutor                    | automatically save and export data             | easily reuse the application                        |
-| `* * *`  | tutor                    | safely exit the program                        | avoid corrupting my files                           |
-| `* * *`  | tutor                    | create an event                                | represent a tutorial                                |
-| `* * *`  | tutor                    | delete an event                                | remove events I no longer need                      |
-| `*`      | impatient tutor          | create recurring events                        | save time and ensure consistency                    |
-| `*`      | impatient tutor          | mass import class timings (events)             | save time                                           |
-| `* * *`  | tutor                    | add students to an event                       | assign students to class                            |
-| `* * *`  | tutor                    | remove students from an event                  | unassign students to class                          |
-| `* * *`  | tutor                    | log a student student as having attended event | check attendance                                    |
-| `* * *`  | tutor                    | add a contact                                  | store the information of my student                 |
-| `* *`    | tutor                    | add multiple contacts with same names          | handle students with duplicate names                |
-| `* * *`  | tutor                    | delete a contact                               | remove students I no longer need to handle          |
-| `* *`    | tutor with many classes  | label a contact with a class                   | remember student is in which class                  |
-| `* *`    | tutor with many course   | label a contact with a course                  | remember student is in which course                 |
-| `*`      | impatient tutor          | mass import students data                      | save time                                           |
-| `* *`    | tutor                    | search for a specific contact by feature       | retrieve full information for a particular contact  |
-| `* *`    | tutor                    | list all contacts                              |                                                     |
-| `* *`    | tutor with many classes  | filter all students by class/course            | find students easily for various purposes           |
-| `* *`    | tutor with many classes  | sort all students by class/course              | find students easily for various purposes           |
-| `* *`    | tutor                    | label progress of students                     | identify struggling students                        |
-| `* *`    | caring tutor             | create a todo                                  | represent a task for some contact                   |
-| `* *`    | caring tutor             | add contact to todo                            | handle a situation for some contact(s)              |
-| `* *`    | caring tutor             | remove contact from todo                       |                                                     |
-| `* *`    | caring tutor             | mark todo as done                              | remember that I have handled the situation          |
-| `* *`    | caring tutor             | mark todo as not done                          |                                                     |
-| `*`      | head tutor               | distinguish students and tutors                | add tutors as contacts                              |
-| `*`      | head tutor               | know when my tutors are unavailable            | schedule make-up classes and track tutor attendance |
-| `*`      | head tutor               | apply labels to tutors                         | track tutor performance                             |
-| `*`      | morally upright tutor    | tag students suspected of plagiarism           | later report them for further investigation         |
-| `*`      | tutor                    | send messages to individuals or groups         | remind them of tasks                                |
-| `*`      | tutor teaching many sems | archive old classes                            | retain useful data while focusing on improvements   |
-| `*`      | tutor teaching many sems | archive or purge old contacts                  | avoid confusion between current and former students |
-| `*`      | experienced user         | create custom commands/macros                  | optimize workflow                                   |
-| `*`      | forgetful tutor          | view upcoming tasks in some priority           | prioritize on tasks with nearer deadlines           |
-| `*`      | impatient tutor          | synchronize contact labels with events         | avoid manually tagging students                     |
-| `*`      | careless tutor           | undo (multiple times)                          | revert to previous state in case of wrong command   |
+| Priority | As a ...                 | I want to ...                            | so that I can ...                                   |
+|----------|--------------------------|------------------------------------------|-----------------------------------------------------|
+| `* * *`  | first time user          | see a functional help page               | understand the app's functionalities                |
+| `* * *`  | tutor                    | automatically load in data               | easily reuse the application                        |
+| `* * *`  | tutor                    | automatically save and export data       | easily reuse the application                        |
+| `* * *`  | tutor                    | exit the program safely                  | avoid corrupting my files                           |
+| `* * *`  | tutor                    | create an event                          | represent a tutorial                                |
+| `* * *`  | tutor                    | delete an event                          | remove events I no longer need                      |
+| `*`      | impatient tutor          | create recurring events                  | save time and ensure consistency                    |
+| `*`      | impatient tutor          | mass import class timings (events)       | save time                                           |
+| `* * *`  | tutor                    | add students to an event                 | assign students to class                            |
+| `* * *`  | tutor                    | remove students from an event            | unassign students to class                          |
+| `* * *`  | tutor                    | log a student as having attended event   | mark attendance                                     |
+| `* * *`  | tutor                    | unlog a student as having attended event | account for mistakes in attendance                  |
+| `* * *`  | tutor                    | add a contact                            | store the information of my student                 |
+| `* *`    | tutor                    | add multiple contacts with same names    | handle students with duplicate names                |
+| `* * *`  | tutor                    | delete a contact                         | remove students I no longer need to handle          |
+| `* *`    | tutor with many classes  | associate a contact with a class         | remember student is in which class                  |
+| `* *`    | tutor with many course   | associate a contact with a course        | remember student is in which course                 |
+| `*`      | impatient tutor          | mass import students data                | save time                                           |
+| `* *`    | tutor                    | search for a specific contact by feature | retrieve full information for a particular contact  |
+| `* *`    | tutor                    | list all contacts                        | see every contact                                   |
+| `* *`    | tutor with many classes  | filter all students by class/course      | find students easily for various purposes           |
+| `* *`    | tutor                    | label students                           | identify struggling students                        |
+| `* *`    | caring tutor             | create a todo                            | represent a task for some contact                   |
+| `* *`    | caring tutor             | add contact to todo                      | handle a situation for some contact(s)              |
+| `* *`    | caring tutor             | remove contact from todo                 | account for mistakes in the contacts                |
+| `* *`    | caring tutor             | mark todo as done                        | remember that I have handled the situation          |
+| `* *`    | caring tutor             | mark todo as not done                    | account for mistakes in handling the situation      |
+| `*`      | head tutor               | distinguish students and tutors          | add tutors as contacts                              |
+| `*`      | head tutor               | apply labels to tutors                   | track tutor performance                             |
+| `*`      | morally upright tutor    | tag students suspected of plagiarism     | later report them for further investigation         |
+| `*`      | tutor                    | send messages to individuals or groups   | remind them of tasks                                |
+| `*`      | tutor teaching many sems | archive old classes                      | retain useful data while focusing on improvements   |
+| `*`      | tutor teaching many sems | archive or purge old contacts            | avoid confusion between current and former students |
+| `*`      | experienced user         | create custom commands/macros            | optimize workflow                                   |
+| `*`      | forgetful tutor          | view upcoming tasks in some priority     | prioritize on tasks with nearer deadlines           |
+| `*`      | impatient tutor          | synchronize contact labels with events   | avoid manually tagging students                     |
+| `*`      | careless tutor           | undo (multiple times)                    | revert to previous state in case of wrong command   |
 
 ### Use cases
 
@@ -459,8 +661,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
    Use case ends.
 
-**Extensions**
-
 **Use case 4: Filter all contacts using some identifiable feature**
 
 **MSS**
@@ -470,7 +670,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-* 1a. The criteria include a filter with an empty value.
+* 1a. The criteria include a filter with an invalid or empty value.
     * 1a1. TC displays an error message.
 
       Use case resumes at step 1.
@@ -494,11 +694,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 2a. User does not provide any field to edit.
     * 2a1. TC displays an error message.
 
-      Use case resumes at step 1.
+      Use case resumes at step 2.
 * 2b. The field's detail is invalid.
     * 2b1. TC displays an error message.
 
-      Use case resumes at step 1.
+      Use case resumes at step 2.
 
 **Use case 6: Add a tag to a contact**
 
@@ -510,18 +710,18 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-* 2a. The given contact index is not a positive integer.
-    * 2a1. TC displays an error message.
+* 1a. The given contact index is not a positive integer.
+    * 1a1. TC displays an error message.
 
-      Use case resumes at step 2.
-* 2b. The given contact index is out of range in the contact list.
-    * 2b1. TC displays an error message.
+      Use case resumes at step 1.
+* 1b. The given contact index is out of range in the contact list.
+    * 1b1. TC displays an error message.
 
-      Use case resumes at step 2.
-* 2c. The given tags are invalid.
-    * 2c1. TC displays an error message.
+      Use case resumes at step 1.
+* 1c. The given tags are invalid.
+    * 1c1. TC displays an error message.
 
-      Use case resumes at step 2.
+      Use case resumes at step 1.
 
 **Use case 7: Remove a tag from a contact**
 
@@ -651,7 +851,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-* 1a. The criteria include a filter with an empty value.
+* 1a. The criteria include a filter with an invalid or empty value.
     * 1a1. TC displays an error message.
 
       Use case resumes at step 1.
@@ -675,11 +875,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 2a. User does not provide any field to edit.
     * 2a1. TC displays an error message.
 
-      Use case resumes at step 1.
+      Use case resumes at step 2.
 * 2b. The field's detail is invalid.
     * 2b1. TC displays an error message.
 
-      Use case resumes at step 1.
+      Use case resumes at step 2.
 
 **Use case 15: Add a tag to a todo**
 
@@ -691,18 +891,18 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-* 2a. The given todo index is not a positive integer.
-    * 2a1. TC displays an error message.
+* 1a. The given todo index is not a positive integer.
+    * 1a1. TC displays an error message.
 
-      Use case resumes at step 2.
-* 2b. The given todo index is out of range in the todo list.
-    * 2b1. TC displays an error message.
+      Use case resumes at step 1.
+* 1b. The given todo index is out of range in the todo list.
+    * 1b1. TC displays an error message.
 
-      Use case resumes at step 2.
-* 2c. The given tags are invalid.
-    * 2c1. TC displays an error message.
+      Use case resumes at step 1.
+* 1c. The given tags are invalid.
+    * 1c1. TC displays an error message.
 
-      Use case resumes at step 2.
+      Use case resumes at step 1.
 
 **Use case 16: Remove a tag from a todo**
 
@@ -740,27 +940,29 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 3. TC associates the contact with the todo.
 4. TC displays a confirmation message.
 
+   Use case ends.
+
 **Extensions**
-* 3a. The given todo index is not a positive integer.
-    * 3a1. TC displays an error message.
+* 2a. The given todo index is not a positive integer.
+    * 2a1. TC displays an error message.
 
-      Use case resumes at step 3.
-* 3b. The given todo index is out of range in the todo list.
-    * 3b1. TC displays an error message.
+      Use case resumes at step 2.
+* 2b. The given todo index is out of range in the todo list.
+    * 2b1. TC displays an error message.
 
-      Use case resumes at step 3.
-* 3c. The given contact index is not a positive integer.
-    * 3c1. TC displays an error message.
+      Use case resumes at step 2.
+* 2c. The given contact index is not a positive integer.
+    * 2c1. TC displays an error message.
 
-      Use case resumes at step 3.
-* 3d. The given contact index is out of range in the contact list.
-    * 3d1. TC displays an error message.
+      Use case resumes at step 2.
+* 2d. The given contact index is out of range in the contact list.
+    * 2d1. TC displays an error message.
 
-      Use case resumes at step 3.
-* 3e. The contact is already assigned to the todo.
-    * 3e1. TC displays an error message.
+      Use case resumes at step 2.
+* 2e. The contact is already assigned to the todo.
+    * 2e1. TC displays an error message.
 
-      Use case resumes from step 3.
+      Use case resumes at step 2.
 
 **Use case 18: Remove a contact from a todo**
 
@@ -798,6 +1000,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 3. TC marks the todo as completed.
 4. TC displays a confirmation message.
 
+   Use case ends.
+
 **Extensions**
 * 2a. The given todo index is not a positive integer.
     * 2a1. TC displays an error message.
@@ -819,6 +1023,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 2. User requests to mark a todo as not completed by index.
 3. TC marks the todo as not completed.
 4. TC displays a confirmation message.
+
+   Use case ends.
 
 **Extensions**
 * 2a. The given todo index is not a positive integer.
@@ -867,7 +1073,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 1. User requests to create an event and provides event details.
-2. TC creates the todo and adds it to the event list.
+2. TC creates the event and adds it to the event list.
 3. TC displays a confirmation message.
 
    Use case ends.
@@ -934,7 +1140,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
    Use case ends.
 
 **Extensions**
-* 1a. The criteria include a filter with an empty value.
+* 1a. The criteria include a filter with an invalid or empty value.
     * 1a1. TC displays an error message.
 
       Use case resumes at step 1.
@@ -958,34 +1164,34 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 2a. User does not provide any fields to edit.
     * 2a1. TC displays an error message.
 
-      Use case resumes at step 1.
+      Use case resumes at step 2.
 * 2b. The field's detail is invalid.
     * 2b1. TC displays an error message.
 
-      Use case resumes at step 1.
+      Use case resumes at step 2.
 
 **Use case 28: Add a tag to an event**
 
 **MSS**
-1. User requests to add a tag to the todo by index.
-2. TC updates the todo with the provided tag.
+1. User requests to add a tag to the event by index.
+2. TC updates the event with the provided tag.
 3. TC displays a confirmation message.
 
    Use case ends.
 
 **Extensions**
-* 2a. The given event index is not a positive integer.
-    * 2a1. TC displays an error message.
+* 1a. The given event index is not a positive integer.
+    * 1a1. TC displays an error message.
 
-      Use case resumes at step 2.
-* 2b. The given event index is out of range in the event list.
-    * 2b1. TC displays an error message.
+      Use case resumes at step 1.
+* 1b. The given event index is out of range in the event list.
+    * 1b1. TC displays an error message.
 
-      Use case resumes at step 2.
-* 2c. The given tags are invalid.
-    * 2c1. TC displays an error message.
+      Use case resumes at step 1.
+* 1c. The given tags are invalid.
+    * 1c1. TC displays an error message.
 
-      Use case resumes at step 2.
+      Use case resumes at step 1.
 
 **Use case 29: Remove a tag from an event**
 
@@ -1023,27 +1229,29 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 3. TC associates the contact with the event.
 4. TC displays a confirmation message.
 
+   Use case ends.
+
 **Extensions**
-* 3a. The given event index is not a positive integer.
-    * 3a1. TC displays an error message.
+* 2a. The given event index is not a positive integer.
+    * 2a1. TC displays an error message.
 
-      Use case resumes at step 3.
-* 3b. The given event index is out of range in the event list.
-    * 3b1. TC displays an error message.
+      Use case resumes at step 2.
+* 2b. The given event index is out of range in the event list.
+    * 2b1. TC displays an error message.
 
-      Use case resumes at step 3.
-* 3c. The given contact index is not a positive integer.
-    * 3c1. TC displays an error message.
+      Use case resumes at step 2.
+* 2c. The given contact index is not a positive integer.
+    * 2c1. TC displays an error message.
 
-      Use case resumes at step 3.
-* 3d. The given contact index is out of range in the contact list.
-    * 3d1. TC displays an error message.
+      Use case resumes at step 2.
+* 2d. The given contact index is out of range in the contact list.
+    * 2d1. TC displays an error message.
 
-      Use case resumes at step 3.
-* 3e. The contact is already assigned to the event.
-    * 3e1. TC displays an error message.
+      Use case resumes at step 2.
+* 2e. The contact is already assigned to the event.
+    * 2e1. TC displays an error message.
 
-      Use case resumes from step 3.
+      Use case resumes at step 2.
 
 **Use case 31: Remove a contact from an event**
 
@@ -1081,25 +1289,27 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 3. TC marks the contact as attended.
 4. TC displays a confirmation message.
 
+    Use case ends.
+
 **Extensions**
-* 3a. The given event index is not a positive integer.
-    * 3a1. TC displays an error message.
-
-      Use case resumes at step 3.
-* 3b. The given event index is out of range in the event list.
-    * 3b1. TC displays an error message.
+* 2a. The given event index is not a positive integer.
+    * 2a1. TC displays an error message.
 
       Use case resumes at step 2.
-* 3c. The given contact index is not a positive integer.
-    * 3c1. TC displays an error message.
+* 2b. The given event index is out of range in the event list.
+    * 2b1. TC displays an error message.
 
       Use case resumes at step 2.
-* 3d. The given contact index is out of range in the event's contact list.
-    * 3d1. TC displays an error message.
+* 2c. The given contact index is not a positive integer.
+    * 2c1. TC displays an error message.
 
       Use case resumes at step 2.
-* 3e. The given contact has already been logged as having attended the event.
-    * 3e1. TC displays an error message.
+* 2d. The given contact index is out of range in the event's contact list.
+    * 2d1. TC displays an error message.
+
+      Use case resumes at step 2.
+* 2e. The given contact has already been logged as having attended the event.
+    * 2e1. TC displays an error message.
 
       Use case ends.
 
@@ -1110,6 +1320,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 2. User requests to log a contact as not having attended for an event by event index and contact index.
 3. TC marks the contact as not attended.
 4. TC displays a confirmation message.
+
+    Use case ends.
 
 **Extensions**
 * 2a. The given event index is not a positive integer.
@@ -1162,34 +1374,34 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
    Use case ends.
 
-**Use case 36: List all subcommands by feature**
+**Use case 36: List all commands by item**
 
 **MSS**
-1. User requests to list all subcommands of a feature.
-2. TC displays all subcommands of that feature.
+1. User requests to list all commands of an item.
+2. TC displays all commands of that item.
 
    Use case ends.
 
 **Extensions**
-* 1a. The given feature is invalid.
+* 1a. The given item is unrecognized (i.e. Not a contact, todo or event).
     * 1a1. TC displays an error message.
 
       Use case resumes at step 1.
 
-**Use case 37: List help message of a subcommand**
+**Use case 37: List help message of a specific command**
 
 **MSS**
-1. User requests to see help message of a subcommand of a specific feature.
+1. User requests to see help message of a command of a specific item.
 2. TC displays the help message.
 
    Use case ends.
 
 **Extensions**
-* 1a. The given feature is unrecognized.
+* 1a. The given item is unrecognized (i.e. Not a contact, todo or event).
     * 1a1. TC displays an error message.
 
       Use case resumes at step 1.
-* 1b. The given subcommand is unrecognized.
+* 1b. The given command is unrecognized.
     * 1b1. TC displays an error message.
 
       Use case resumes at step 1.
@@ -1217,11 +1429,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ### Glossary
 
 * **Contact**: A stored record of a student or tutor, containing relevant details such as name, ID, and class.
-* **Tag**: A specific keyword which can be associated with an arbitrary value, for a specific contact.
-  * **Class**: A group of students assigned to a particular tutor.
-  * **Course**: A subject or academic course that multiple classes and students may belong to.
+* **Class**: A group of students assigned to a particular tutor.
+* **Course**: A subject or academic course that multiple classes and students may belong to.
 * **Event**: A scheduled session such as tutorial class, remedial, or consultation that tutors can create, modify, and assign students to.
 * **Todo**: A task or action item that can be associated with a student or another tutor, such as grading assignments, scheduling follow-ups, or preparing lesson materials.
+* **Tag**: A specific keyword which can be associated with an arbitrary value, for a specific contact, event, or todo.
 * **Head Tutor**: A tutor responsible for overseeing other tutors.
 * **Mainstream OS**: Windows, Linux, Unix, MacOS.
 
@@ -1244,38 +1456,63 @@ testers are expected to do more *exploratory* testing.
 
    1. Download the jar file and copy into an empty folder
 
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
+   1. Double-click the jar file.<br>
+      Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
 
 1. Saving window preferences
 
    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
 
    1. Re-launch the app by double-clicking the jar file.<br>
-       Expected: The most recent window size and location is retained.
+      Expected: The most recent window size and location is retained.
 
-1. _{ more test cases …​ }_
 
 ### Deleting a contact
 
 1. Deleting a contact while all contacts are being shown
 
-   1. Prerequisites: List all contacts using the `list` command. Multiple contacts in the list.
+   1. Prerequisites: List all contacts using the `contact list` command. Multiple contacts in the list.
 
-   1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+   1. Test case: `contact delete 1`<br>
+      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message.
 
-   1. Test case: `delete 0`<br>
+   1. Test case: `contact delete 0`<br>
       Expected: No contact is deleted. Error details shown in the status message. Status bar remains the same.
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+   1. Other incorrect delete commands to try: `delete`, `contact delete x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
-1. _{ more test cases …​ }_
+### Manual modification of data
 
-### Saving data
+**Tip**: Refer to the [user guide](UserGuide.md) for examples of valid and invalid parameters.
 
-1. Dealing with missing/corrupted data files
+1. Dealing with missing data files
 
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+   1. Delete the `data` folder, or any json files within it.
+   2. Re-launch the app.<br>
+      Expected: The app starts up with a sample list for each missing file.
+   3. Exit the app via any valid exit command (note: closing the window or terminating the process is not a valid exit command).<br>
+      Expected: The data files are saved in the `data` folder upon execution of any valid command.
 
-1. _{ more test cases …​ }_
+1. Dealing with corrupted data files
+   1. Ensure that sample data files exist in the `data` folder (see previous point).
+   1. Test case 1: Replace the value of any field within any json file with an invalid value, then re-launch the app.<br>
+      Expected: The specific entry is skipped and the rest of the contents are loaded. 
+   1. Test case 2: Make major incorrect corruption to any json file, then re-launch the app.<br>
+      Expected: All invalid entries are skipped and the rest of the contents are loaded (if any).
+
+--------------------------------------------------------------------------------------------------------------------
+
+## **Appendix: Planned Enhancements**
+Team size: 5
+1. **Make delete command support multiple indices:** Extend support to delete multiple items at once, similar to tagging and linking contacts.
+2. **Safeguard users against major irreversible actions:** For example, clearing contacts is presently an irreversible action. Two possible directions include seeking confirmation from the user, or supporting an undo feature to revert any changes.
+3. **Support more operators in `filter` command:** As `filter` command is targeted at advanced users (power users), other operators (e.g. `xor:`) can be added to support more complex queries, and queries for optional values such as tags should be expanded to support searching for no values.
+4. **Support operators across criteria in `filter` command**: `filter` is currently limited to applying `and` across all criteria (i.e. must satisfy all criteria). Much like operators expand the functionality of a single criterion, operators across criteria can further enhance the functionality of `filter` command.
+
+## **Appendix: Effort**
+
+Difficulty level is on the higher end due to the large number of features that were implemented, alongside a single complex feature (`filter`).
+Special efforts were made to improve the code quality via abstraction of the commonalities between `contact`, `todo` and `event` via `item`.
+This choice has resulted in greater consistency of behavior across the three types, in terms of the input restrictions, error behaviors and output formats, which were implemented concretely via the definitions of numerous interfaces and refactoring of existing codebase which was originally targeted at the `contact` type.
+A particularly challenging aspect is the curation of the `filter` command, from the set of allowed operations to the syntax that the user can input. The aim was to create a powerful and easy to use command that is aimed at advanced users.

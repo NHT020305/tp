@@ -4,7 +4,7 @@
 !include <office/Users/user>
 !include style.puml
 
-Package " "<<Rectangle>>{
+Package "TutorConnect"<<Rectangle>>{
     Class UI UI_COLOR
     Class Logic LOGIC_COLOR
     Class Storage STORAGE_COLOR

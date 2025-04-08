@@ -448,18 +448,30 @@ Examples:
 
 ### Exiting the program : `exit`/`quit`/`kill`/`bye`
 
-## Quality of Life:
+## Quality of Life
 
-1. You may use the arrows to traverse through command history.
+1. You may use the up or down arrows to traverse through command history, similar to terminal.
 
 1. Clicking on each contact/event/todo card will display the full information of the card in the command output.
 
 1. Click on "Event" or "Todo" button to toggle between event and todo list views. You may use the reset button to reset filtered views of event/todo and contacts at the same time.
 
-1. Apply natural ordering to lists:
-  * Contacts should be sorted first by name, then by ID in alphabetical order.
-  * Todos should be sorted by status first, followed by deadline, and then by name.
-  * Events should be sorted by start time, then by end time, and finally by name.
+1. Natural ordering is applied to all lists:
+  * Contacts are sorted first by name, then by ID in alphabetical order.
+  * Todos are sorted first by status (not done first), followed by deadline, and then by name in alphabetical order.
+  * Events are be sorted first by start time, then by end time, and finally by name in alphabetical order.
+
+## Storage
+
+TutorConnect stores its data in the `\data` folder, which contains three files, `contactlist.json`, `todolist.json`, and `eventlist.json`. Data is automatically saved after each command is executed.
+
+These JSON files are human-readable and can be manually edited, but caution is advised. It’s strongly recommended to use the built-in edit commands in the app to avoid introducing errors. You can also create these `.json` files using external sources that contain information like student details or class schedules, and place them in the `\data` folder to bulk import the data into the app.
+
+**Tip**: Since todos and events are linked to contacts via their IDs, make sure to update those references if you manually change a contact's ID.
+
+During startup, the app attempts to load the stored data. If any attribute within an item is invalid, the entire item is considered invalid and skipped. Refer to the table of constraints for guidance on what counts as valid attribute.
+
+In cases where data parsing fails entirely, the app will start with an empty dataset. Be aware that because data is saved after every command, running any command will overwrite the previous data.
 
 ## Storage
 

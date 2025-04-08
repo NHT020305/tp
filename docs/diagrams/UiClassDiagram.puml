@@ -11,8 +11,8 @@ Class "<<interface>>\nUi" as Ui
 Class "{abstract}\nUiPart<T>" as UiPart
 Class UiManager
 Class MainWindow
-Class ResultDisplay
 Class CommandBox
+Class ResultDisplay
 Class ListPanel
 Class DisplayableListViewCell
 
@@ -20,7 +20,7 @@ package "card" as card {
 Class "<<interface>>\nCard<T>" as Card
 Class "<<interface>>\nCardFactory<T>" as CardFactory
 Class "GenericCardFactory<T>" as GenericCardFactory
-Class XCard
+Class YCard
 }
 
 package "util" as util {
@@ -40,7 +40,7 @@ Cloud HiddenLogic #FFFFFF
 
 UiManager .up.|> Ui
 GenericCardFactory ..|> CardFactory
-XCard ..|> Card
+YCard ..|> Card
 GenericAdapter ..|> ItemAdapter
 ItemAdapter ..|> DisplayableItem
 
@@ -48,7 +48,7 @@ MainWindow --|> UiPart
 ResultDisplay --|> UiPart
 CommandBox --|> UiPart
 ListPanel --|> UiPart
-XCard --|> UiPart
+YCard --|> UiPart
 DisplayableListViewCell --|> UiPart
 
 MainWindow *--> "1" CommandBox
@@ -58,10 +58,10 @@ ListPanel o--> "*" DisplayableListViewCell
 
 UiManager --> "1" MainWindow
 DisplayableListViewCell --> DisplayableItem : renders
-XCard ..> DisplayableItem : < getDisplayCard() creates
+YCard ..> DisplayableItem : < getDisplayCard() creates
 Card --> UiPart : getUiPart() returns >
 GenericCardFactory --> Card : creates >
-XCard --> Model: references >
+YCard --> Model: references >
 GenericAdapter --> Model
 ItemAdapter o--> CardFactory
 

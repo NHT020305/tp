@@ -10,13 +10,20 @@ Class LogicManager
 }
 
 package Model as ModelPackage {
-Class "<<interface>>\nModel" as Model
-Class ModelManager
+Class "<<interface>>\nModel" as Model MODEL_COLOR_T2
+Class "ModelManager" as ModelManager MODEL_COLOR_T2
+Class "ContactManagerAndList" as ContactManager MODEL_COLOR_T2
+Class "TodoManagerAndList" as TodoManager MODEL_COLOR_T2
+Class "EventManagerAndList" as EventManager MODEL_COLOR_T2
 }
 
 package Storage as StoragePackage {
-Class "<<interface>>\nStorage" as Storage
-Class StorageManager
+Class "<<interface>>\nStorage" as Storage STORAGE_COLOR_T2
+Class "StorageManager" as StorageManager STORAGE_COLOR_T2
+Class "ContactStorage" as ContactStorage STORAGE_COLOR_T2
+Class "TodoStorage" as TodoStorage STORAGE_COLOR_T2
+Class "EventStorage" as EventStorage STORAGE_COLOR_T2
+Class "UserPrefsStorage" as UserPrefsStorage STORAGE_COLOR_T2
 }
 
 Class HiddenOutside #FFFFFF
@@ -26,6 +33,15 @@ LogicManager .up.|> Logic
 ModelManager .up.|> Model
 StorageManager .up.|> Storage
 
-LogicManager --> Model
-LogicManager --> Storage
+ModelManager --> ContactManager
+ModelManager --> TodoManager
+ModelManager --> EventManager
+
+StorageManager --> ContactStorage
+StorageManager --> TodoStorage
+StorageManager --> EventStorage
+StorageManager --> UserPrefsStorage
+
+LogicManager --> Model : executes commands on
+LogicManager --> Storage : persists changes via
 @enduml
