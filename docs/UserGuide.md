@@ -85,6 +85,10 @@ This section contains the common commands shared between `contact`, `event` and 
 An `item` in this section is defined as one of the following `contact`, `event` and `todo`. Please replace `item` with the command of interest.
 The constraints of the different flags are defined clearer at the end of all the sections. The guide below serves as an overview and example of how to use these commands.
 
+* `contact`: To store the various contact information of a student / tutor in TutorConnect.
+* `event`: To keep track of tasks that have a set duration at a location.
+* `todo`: To keep track of tasks that have a deadline.
+
 ### Adding an `item`: `add`
 An `item` is added to the application.
 
@@ -131,13 +135,11 @@ Deletes an item from its corresponding list. Removing it from *existence*.
 
 **Format & Examples**
 * `item`
-  * Format: `item delete CONTACT_INDEX`
+  * Format: `item delete item_INDEX`
   * Example: 
     * `contact delete 1`
     * `event delete 2`
     * `todo delete 3`
-
-**Important**: `ITEM_INDEX` is the index present in the UI, `CONTACT_INDEX` represents the index of the item on the item on the contact list on right. `EVENT/TODO_INDEX` is the index of the `event` or `todo` of the selected list on the bottom left.
 
 ### Getting information: `info` 
 Displays the full information of the `item` of interest as requested by the user.
@@ -149,12 +151,13 @@ Displays the full information of the `item` of interest as requested by the user
     * `event info 2`
     * `todo info 3`
 
-**Important**: `ITEM_INDEX` is the index present in the UI, `CONTACT_INDEX` represents the index of the item on the item on the contact list on right. `EVENT/TODO_INDEX` is the index of the `event` or `todo` of the selected list on the bottom left.
-
 **Pro Tip**: You can click on the `item` card to view the item of interest. This operation is equivalent to using the `info` command.
 
 ### Getting full `item` list: `list`
 Displaying the full `item` list. Useful for displaying the full `item` list after `filter` operation.
+Operator between columns is `and`, and the operator specified is **ONLY** within columns
+
+The `filter` stays there even after you execute other commands. Use another `filter` or list to overwrite the `filter`.
 
 **Format & Examples**
 * Format: `item list`
@@ -192,8 +195,8 @@ Supported `contact` columns
 
 Supported `event` columns:
 * `--name`
-* `--start`. In the form of `[<INTERVAL_START>/<INTERVAL_END>]`.
-* `--end`. In the form of `[<INTERVAL_START>/<INTERVAL_END>]`.
+* `--start`. To filter the event start time, within the duration of`[<INTERVAL_START>/<INTERVAL_END>]`.
+* `--end`. To filter the event end time, within the duration of `[<INTERVAL_START>/<INTERVAL_END>]`.
 * `--location`.
 * `--tag`
 * `--contact`.
@@ -201,8 +204,8 @@ Supported `event` columns:
 Supported `todo` columns:
 * `--name`.
 * `--location`.
-* `--deadline`. In the form of
-* `--status`.
+* `--deadline`. To filter todo deadlines, within the duration of `[<INTERVAL_START>/<INTERVAL_END>]`.
+* `--status`. Note that operators are not allowed for this flag.
 * `--tag`.
 * `--contact`.
 
@@ -211,6 +214,8 @@ Supported `todo` columns:
 * `or`: At least one value must match.
 * `nand`: Not all the values must match.
 * `nor`: None of the values must match.
+
+**Pro-tip**: Please refer to the table of constraints for a more concrete definition of the flags being used in `filter`.
 
 If an operator is not provided, it defaults to `and`. If an unrecognized operator is provided, it will be treated as a value. If multiple valid operators are provided, the first one will be applied and the rest will be treated as values.
 
@@ -384,11 +389,15 @@ Example:
 |`--course`|Can contain multiple words having special characters, but the words cannot start with `-`. Must not be blank.|`contact`|+ `--course course`<BR> - `--course -course`|
 |`--group`|Can contain multiple words having special characters, but the words cannot start with `-`. Must not be blank.|`contact`|+ `--group T01 01`<BR> - `--group -group`|
 |`--tag`|A word that cannot start with `-`. Must not be blank|`contact`, `event`, `todo`|+ `--tag tag`<BR>- `--tag -tag`<BR>- `--tag tag t` (tags `t` and `tag` will be added)|
-|`--name`|Can contain multiple words having special characters, but the words cannot start with `-`. Must not be blank.|`contact`, `event`, `todo`|+ `--name name n`<BR>- `--name -name`|
 |`--start`|`yy-mm-dd hh:mm`, `hh` is of 24 hours format.|`event`|+ `--start 24-08-26 12:00` <BR> - `--start 24/08/26 1400`|
 |`--end`|`yy-mm-dd hh:mm`, `hh` is of 24 hours format.|`event`|+ `--end 24-08-26 12:00` <BR> - `--end 24/08/26 1400`|
 |`--deadline`|`yy-mm-dd hh:mm`, `hh` is of 24 hours format.|`todo`|+ `--deadline 24-08-26 12:00` <BR> - `--deadline 24/08/26 1400`|
 |`--contact`|Positive integer, from 1 to the size of the `contact` list.|`event`, `todo`|+ `--contact 1` <BR> - `--contact abc`|
+
+
+**Important**:
+* `--start`, `--end`, `--deadline` format must contain exactly one space between `dd` and `hh`.
+* `--contact` for `event` and `todo` is from the information from `list`.
 
 ## Miscellaneous
 
