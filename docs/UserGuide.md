@@ -442,6 +442,18 @@ Examples:
   * Todos should be sorted by status first, followed by deadline, and then by name.
   * Events should be sorted by start time, then by end time, and finally by name.
 
+## Storage
+
+TutorConnect stores its data in the `\data` folder, which contains three files, `contactlist.json`, `todolist.json`, and `eventlist.json`. Data is automatically saved after each command is executed.
+
+These JSON files are human-readable and can be manually edited, but caution is advised. It’s strongly recommended to use the built-in edit commands in the app to avoid introducing errors. You can also create these `.json` files using external sources that contain information like student details or class schedules, and place them in the `\data` folder to bulk import the data into the app.
+
+**Tip**: Since todos and events are linked to contacts via their IDs, make sure to update those references if you manually change a contact's ID.
+
+During startup, the app attempts to load the stored data. If any attribute within an item is invalid, the entire item is considered invalid and skipped. Refer to the table of constraints for guidance on what counts as valid attribute.
+
+In cases where data parsing fails entirely, the app will start with an empty dataset. Be aware that because data is saved after every command, running any command will overwrite the previous data.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
