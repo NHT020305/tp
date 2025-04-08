@@ -308,60 +308,6 @@ The following activity diagram summarizes what happens when a user executes a ne
 
 _{more aspects and alternatives to be added}_
 
-### \[Proposed\] Command Parser with flags
-Proposed Implementation
-
-The proposed parsing mechanism for `Command` containing flags is facilitated by specialized `XYCommandParser` classes. These parsers interpret user input and construct the appropriate `XYCommand` objects. The parsing process relies on several utility components:
-
-Where `X` refers to the classes with the `item` interface. `Y` refers to the new feature related to the class `X`.
-
-* `ArgumentTokenizer` – splits the raw input into prefixes and arguments.
-
-* `ArgumentMultimap` – maps each prefix to its respective value(s).
-
-The following sequence diagram shows how an edit operation goes through the Logic component:
-
-<puml src="diagrams/XYCommandSequenceDiagram.puml" width="250" />
-
-Step 1. The `args` for `XYCommand` gets passed into the corresponding `XYCommandParser`.
-
-Step 2: The `ArgumentTokenizer` scans the raw input string and splits it based on the defined prefixes (e.g., `--tag` for tags, `--name` for names).
-
-Each prefix and its value(s) are stored in an `ArgumentMultimap`. Internally, the following methods are used: 
-
-* `ArgumentTokenizer#findAllPrefixPositions()`: Collects all positions of the supplied prefixes in the `argsString`.
-* `ArgumentTokenizer#findPrefixPositions()`: Iteratively searches the string for instances of a specific prefix (e.g., `--tag`, `--name`).
-* `ArgumentMultimap#extractArguments()`: Once all prefix positions are gathered, `extractArguments()` slices up the original string based on the positions and maps each prefix to its corresponding value(s). The final result is stored in an `ArgumentMultimap`.
-
-Step 3: After tokenization, the `ArgumentMultimap` contains all parsed arguments grouped by their corresponding prefixes.
-
-This step involves:
-
-Checking for required arguments:
-Certain prefixes (e.g., `PREFIX_NAME`) may be mandatory. If missing, a `ParseException` is thrown.
-
-Converting strings into domain-specific objects:
-
-* `ParserUtil.parseName(...)` for `names`
-
-* `ParserUtil.parseTags(...)` for `tags`
-
-* `ParserUtil.parseIndex(...)` for `indices`
-
-These utility methods ensure type safety and can be defined as you needed. If any value fails to conform to the expected format (e.g., an invalid index or empty tag), a `ParseException` is raised with an appropriate error message.
-
-Step 4: Once all necessary values are extracted and validated, the final command is constructed:
-
-At this stage, the parser assembles the required information into an executable `XYCommand` object, which is returned to the `LogicManager`.
-
-Design Considerations
-* Modularity: Each command has its own parser class, keeping logic isolated and maintainable.
-
-* Reusability: Shared utility classes like `ArgumentTokenizer`, `ArgumentMultimap`, and `ParserUtil` ensure consistency across parsers.
-
-* Scalability: Easily supports optional, repeatable, and order-independent arguments through prefix-based parsing. These prefixes 
-are called and parsed by `ArgumentTokenizer` as required.
-
 ### \[Proposed\] Data archiving
 
 _{Explain here how the data archiving feature will be implemented}_
