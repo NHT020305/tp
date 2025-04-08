@@ -29,15 +29,27 @@ If you can type fast, TutorConnect can get your contact management tasks done fa
    ![Ui](images/Ui.png)
 
 1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** will display a help message.<br>
-   Some example commands you can try:
+   You can try an example workflow of logging student attendance of a tutorial:
 
-    * `todo list` : Lists all todos.
+    * `contact list` : Lists all contacts.
 
-    * `event add --name CS2040S tutorial --start 24-08-26 12:00 --end 24-08-26 14:00 --location NUS SoC COM1 --tag algorithms` : Adds an event to the app.
+    * `contact filter --course CS1010S --group T01` : Filters for students enrolled in CS1010S and tutorial group T01.
 
-    * `contact delete 3` : Deletes the 3rd contact shown in the current list.
+    * `event add --name CS1010S T01 Tutorial W9 --start 25-03-18 12:00 --end 25-03-18 13:00 --location BIZ2 --tag topic.List` : Adds an event named `CS1010S T01 Tutorial W9`. The event should appear at index 1.
 
-    * `contact clear` : Deletes all contacts.
+    ![Add event screenshot](images/addeventscreenshot.png)
+
+    * `event link 1 --contact 1` : Adds the contact at index 1 in the contact list on the right, `Alex Yeoh`, to the event.
+
+    * `event info 1` : Displays the information of the event. `Alex Yeoh` should appear at index 1 in the displayed attendance log.
+    
+    ![Info event screenshot](images/infoeventscreenshot.png)
+
+    * `event log 1 --contact 1` : Logs the contact at index 1 of the event's attendance log, `Alex Yeoh`, as having attended the event.
+
+    * `event info 1` : Displays the information of the event. `Alex Yeoh` should appear at index 1 in the displayed attendance log and has an `X` next to him.
+
+    ![Log event screenshot](images/logeventscreenshot.png)
 
     * `exit` : Exits the app.
 
@@ -224,7 +236,7 @@ If an operator is not provided, it defaults to `and`. If an unrecognized operato
 `--tag`: A keyword matching an `item`'s tags means the keyword is contained in at least one of the `item`'s tags.
 
 Provide one or more keywords separated by spaces.
-Keywords are case-insensitive and support partial matches.
+Text based keywords are case-insensitive and support partial matches.
 
 Examples:
 * `contact filter --id or: 12 13`.
