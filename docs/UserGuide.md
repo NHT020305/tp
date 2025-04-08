@@ -207,16 +207,16 @@ Supported `contact` columns
 
 Supported `event` columns:
 * `--name`
-* `--start`. To filter the event start time, within the duration of`[<INTERVAL_START>/<INTERVAL_END>]`.
-* `--end`. To filter the event end time, within the duration of `[<INTERVAL_START>/<INTERVAL_END>]`.
-* `--location`.
+* `--start`. To filter the event start time, within the duration of`[<INTERVAL_START>/<INTERVAL_END>]`. Start and end can be unbounded for one of them
+* `--end`. To filter the event end time, within the duration of `[<INTERVAL_START>/<INTERVAL_END>]`. Start and end can be unbounded for one of them
+* `--location`. 
 * `--tag`
 * `--contact`.
 
 Supported `todo` columns:
 * `--name`.
 * `--location`.
-* `--deadline`. To filter todo deadlines, within the duration of `[<INTERVAL_START>/<INTERVAL_END>]`.
+* `--deadline`. To filter todo deadlines, within the duration of `[<INTERVAL_START>/<INTERVAL_END>]`. Start and end can be unbounded for one of them.
 * `--status`. Note that operators are not allowed for this flag.
 * `--tag`.
 * `--contact`.
@@ -316,7 +316,6 @@ Format: `event unlink EVENT_INDEX --contact CONTACT_INDEX/INDICES`
 
 Examples:
 * `event unlink 1 --contact 3 4`
-* `event untag 1 --tag important weekly`
 
 ### Logging attendance for an event: `log`
 Records the attendance of one or more contacts for a specific event. This allows you to track who actually attended, separate from just being linked to the event.
@@ -413,7 +412,15 @@ Example:
 
 **Important**:
 * `--start`, `--end`, `--deadline` format must contain exactly one space between `dd` and `hh`.
-* `--contact` for `event` and `todo` is from the information from `list`.
+* Depending on the commands, the `index` for `--contact` in `event` and `todo` commands is based on the `contact` list on the right or the contact list displayed by the `event` info and `todo` info commands.
+
+Value format:
+
+* For text-based columns such as `--name` and `--location`: Provide one or more keywords separated by spaces. Keywords are case-insensitive and support partial matches.
+  * **Note**: A tag keyword matches an item if there exists one tag linked to the item that matches the keywords.
+* For datetime-based columns such as `--start` and `--deadline`: Provide closed intervals of format `[<INTERVAL_START>/<INTERVAL_END>]` separated by whitespaces. The interval start and end must be in the format `yy-mm-dd hh:mm`, where `hh` is of 24-hour format. You can use `-` to indicate an absent start or end, but at least one bound must be provided.
+* For `todo`'s `--status`: Provide a single keyword, which must be `true` or `false`, corresponding to whether the todo is marked as completed.
+
 
 ## Miscellaneous
 
