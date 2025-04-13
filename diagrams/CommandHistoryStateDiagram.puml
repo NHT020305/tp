@@ -1,0 +1,30 @@
+@startuml
+hide empty description
+
+state "Empty Command Text Field" as Empty
+state "New Command Added to History" as NewCommand
+state "First Command in History" as FirstCommand
+state "Viewing Oldest Command" as OldestCommand
+state "Viewing Previous Command" as PreviousCommand
+state "Viewing Next Command" as NextCommand
+
+[*] --> Empty
+
+Empty --> NewCommand : User enters command\nand presses Enter
+NewCommand --> FirstCommand : User presses Up arrow
+
+FirstCommand --> OldestCommand : User presses Up arrow\nwhen already at first command
+OldestCommand --> OldestCommand : User presses Up arrow
+OldestCommand --> PreviousCommand : User presses Down arrow
+
+PreviousCommand --> OldestCommand : User presses Up arrow\nwhen viewing second command
+PreviousCommand --> PreviousCommand : User presses Up arrow\n(general case)
+PreviousCommand --> NextCommand : User presses Down arrow
+
+NextCommand --> PreviousCommand : User presses Up arrow
+NextCommand --> NextCommand : User presses Down arrow\n(general case)
+NextCommand --> Empty : User presses Down arrow\nat end of history
+
+Empty --> NewCommand : User enters command\nand presses Enter
+
+@enduml

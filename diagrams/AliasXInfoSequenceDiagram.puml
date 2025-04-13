@@ -1,0 +1,111 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+actor User
+box Ui UI_COLOR_T1
+participant ":XCard" as XCard UI_COLOR
+participant ":ListPanel" as ListPanel UI_COLOR
+participant ":MainWindow" as MainWindow UI_COLOR
+participant ":ResultDisplay" as ResultDisplay UI_COLOR
+endbox
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+endbox
+'participant ":ParserImpl" as ParserImpl LOGIC_COLOR
+'participant ":XCommandParser" as ContactCommandParser LOGIC_COLOR
+'participant ":InfoXCommandParser" as InfoCommandParser LOGIC_COLOR
+'participant ":InfoXCommand" as InfoContactCommand LOGIC_COLOR
+'participant ":Model" as Model MODEL_COLOR
+'participant ":ItemManagerAndList" as ContactManagerAndList MODEL_COLOR
+
+User -> XCard: click()
+activate XCard
+
+XCard -> ListPanel: handler.run()
+activate ListPanel
+
+ListPanel -> MainWindow: onItemClickHandler.accept(index)
+activate MainWindow
+
+MainWindow -> MainWindow: handleXListClick(index)
+activate MainWindow
+MainWindow -> LogicManager: execute(X_COMMAND_WORD + INFO_COMMAND_WORD + index)
+
+activate LogicManager
+
+'LogicManager -> ParserImpl: parseCommand(commandText)
+'activate ParserImpl
+'
+'ParserImpl -> ContactCommandParser: parse(arguments)
+'activate ContactCommandParser
+'
+'ContactCommandParser -> InfoCommandParser: parse(arguments)
+'activate InfoCommandParser
+'
+'create InfoContactCommand
+'InfoCommandParser -> InfoContactCommand: new InfoContactCommand(index)
+'activate InfoContactCommand
+'
+'InfoContactCommand --> InfoCommandParser: command
+'deactivate InfoContactCommand
+'
+'InfoCommandParser --> ContactCommandParser: command
+'deactivate InfoCommandParser
+'
+'ContactCommandParser --> ParserImpl: command
+'deactivate ContactCommandParser
+'
+'ParserImpl --> LogicManager: command
+'deactivate ParserImpl
+'
+'LogicManager -> InfoContactCommand: execute(model)
+'activate InfoContactCommand
+'
+'InfoContactCommand -> Model: getContactManagerAndList()
+'activate Model
+'
+'Model --> InfoContactCommand: contactManagerAndList
+'deactivate Model
+'
+'InfoContactCommand -> ContactManagerAndList: getFilteredItemList()
+'activate ContactManagerAndList
+'
+'ContactManagerAndList --> InfoContactCommand: filteredList
+'deactivate ContactManagerAndList
+
+'InfoContactCommand -> InfoContactCommand: getContactToDisplay()
+'activate InfoContactCommand
+'
+'InfoContactCommand --> InfoContactCommand: contact
+'deactivate InfoContactCommand
+'
+'InfoContactCommand -> InfoContactCommand: getSuccessMessage(contact)
+'activate InfoContactCommand
+
+'InfoContactCommand --> InfoContactCommand: message
+'deactivate InfoContactCommand
+
+'InfoContactCommand --> LogicManager: commandResult
+'deactivate InfoContactCommand
+
+LogicManager --> MainWindow: commandResult
+deactivate LogicManager
+deactivate MainWindow
+
+MainWindow -> ResultDisplay: setFeedbackToUser(commandResult)
+activate ResultDisplay
+ResultDisplay --> MainWindow
+deactivate ResultDisplay
+
+MainWindow --> ListPanel
+deactivate MainWindow
+
+ListPanel --> XCard
+deactivate ListPanel
+
+XCard --> User
+deactivate XCard
+
+@enduml

@@ -1,0 +1,55 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+actor User
+box Ui UI_COLOR_T1
+participant ":CommandBox" as CommandBox UI_COLOR
+participant ":TextField" as TextField UI_COLOR
+endbox
+
+User -> TextField: Press Up arrow key
+activate TextField
+TextField -> CommandBox: handleKeyPress(KeyEvent)
+activate CommandBox
+CommandBox -> CommandBox: displayPreviousCommand()
+CommandBox -> CommandBox: Decrement currentCommandIndex
+CommandBox -> CommandBox: Get command from previousCommands list
+CommandBox -> TextField: setText(previousCommand)
+CommandBox --> TextField:
+deactivate CommandBox
+TextField --> User: Show previous command
+deactivate TextField
+
+User -> TextField: Press Down arrow key
+activate TextField
+TextField -> CommandBox: handleKeyPress(KeyEvent)
+activate CommandBox
+CommandBox -> CommandBox: displayNextCommand()
+CommandBox -> CommandBox: Increment currentCommandIndex
+CommandBox -> CommandBox: Check if at end of history
+alt At end of history
+    CommandBox -> TextField: setText("")
+else Not at end of history
+    CommandBox -> CommandBox: Get command from previousCommands list
+    CommandBox -> TextField: setText(nextCommand)
+end
+CommandBox --> TextField:
+deactivate CommandBox
+TextField --> User: Show next command or clear field
+deactivate TextField
+
+User -> TextField: Enter new command + Press Enter
+activate TextField
+TextField -> CommandBox: handleCommandEntered()
+activate CommandBox
+CommandBox -> CommandBox: Add command to previousCommands list
+CommandBox -> CommandBox: Reset currentCommandIndex to point after last command
+CommandBox -> CommandBox: Execute command
+CommandBox -> TextField: setText("")
+CommandBox --> TextField:
+deactivate CommandBox
+TextField --> User: Clear field, show command output
+deactivate TextField
+
+@enduml

@@ -1,0 +1,104 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Ui UI_COLOR_T1
+participant ":MainWindow" as MainWindow UI_COLOR
+endbox
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":ParserImpl" as ParserImpl LOGIC_COLOR
+participant ":YParser" as YParser LOGIC_COLOR
+participant ":XYCommandParser" as XYCommandParser LOGIC_COLOR
+participant ":ArgumentTokenizer" as ArgumentTokenizer LOGIC_COLOR
+participant "a:ArgumentMultimap" as ArgumentMultimap LOGIC_COLOR
+participant ":ParserUtil" as ParserUtil LOGIC_COLOR
+participant "b:XYCommand" as XYCommand LOGIC_COLOR
+participant ":ItemManagerWithFilteredList" as ItemManager LOGIC_COLOR
+participant ":Storage" as Storage LOGIC_COLOR
+endbox
+
+activate MainWindow
+MainWindow -> LogicManager: execute(commandText)
+activate LogicManager
+
+LogicManager -> ParserImpl: parseCommand(commandText)
+activate ParserImpl
+
+ParserImpl -> YParser: parseCommand(args)
+activate YParser
+YParser --> ParserImpl: YCommandType.X
+deactivate YParser
+
+ParserImpl -> XYCommandParser: parse(args)
+activate XYCommandParser
+
+XYCommandParser -> ArgumentTokenizer: tokenize(args, prefixes)
+activate ArgumentTokenizer
+
+'ArgumentTokenizer -> ArgumentTokenizer: findAndExtractPrefixArguments(args, prefixes)
+'
+'ArgumentTokenizer -> ArgumentTokenizer: findAllPrefixPositions(args, prefixes)
+'ArgumentTokenizer -> ArgumentTokenizer: findPrefixPositions(args, prefixes)
+'ArgumentTokenizer -> ArgumentTokenizer: findPrefixPosition(args, prefix, fromIndex)
+'
+'ArgumentTokenizer -> ArgumentTokenizer: extractArguments(args, positions)
+'ArgumentTokenizer -> ArgumentTokenizer: extractArgumentValue(args, index, nextIndex)
+'
+'ArgumentTokenizer -> ArgumentMultimap: put(prefix, value)
+'activate ArgumentMultimap
+'ArgumentMultimap --> ArgumentTokenizer: a
+'deactivate ArgumentMultimap
+
+ArgumentTokenizer -> ArgumentTokenizer: findPrefixPositions(args, prefixes)
+
+loop for each position in sorted prefixPositions
+ArgumentTokenizer -> ArgumentTokenizer: extractPrefixesAndArguments(args, prefixPositions)
+ArgumentTokenizer -> ArgumentMultimap: put(prefix, argument)
+activate ArgumentMultimap
+ArgumentMultimap --> ArgumentTokenizer
+deactivate ArgumentMultimap
+end
+
+
+ArgumentTokenizer --> XYCommandParser: a
+deactivate ArgumentTokenizer
+
+XYCommandParser -> ArgumentMultimap: verifyNoDuplicatePrefixesFor(prefixList)
+activate ArgumentMultimap
+ArgumentMultimap --> XYCommandParser: a
+deactivate ArgumentMultimap
+
+XYCommandParser -> XYCommandParser: parsePrefixes(argumentMultimap, filterCriteriaMap)
+XYCommandParser -> ParserUtil: parseArguments(val)
+activate ParserUtil
+ParserUtil --> XYCommandParser: arguments
+deactivate ParserUtil
+
+XYCommandParser --> ParserImpl: b
+deactivate XYCommandParser
+
+ParserImpl --> LogicManager: b
+deactivate ParserImpl
+
+LogicManager -> XYCommand: execute()
+activate XYCommand
+
+XYCommand -> ItemManager: updateFilteredItemsList(predicate)
+activate ItemManager
+ItemManager --> XYCommand: filteredListResult
+deactivate ItemManager
+
+XYCommand --> LogicManager: commandResult
+deactivate XYCommand
+
+LogicManager -> Storage: saveYList(itemManagerAndList)
+activate Storage
+Storage --> LogicManager
+deactivate Storage
+
+MainWindow<- LogicManager : commandResult
+deactivate LogicManager
+deactivate MainWindow
+@enduml
